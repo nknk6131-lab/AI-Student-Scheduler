@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Student Scheduler</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap">
+          <div class="brand-icon">AI</div>
+          <div>
+            <p class="eyebrow">Academic Copilot</p>
+            <h1>Student Scheduler</h1>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>AI Planner</h2>
+          <textarea id="inputText" placeholder="Example: I have a DSA exam in five days, a DBMS assignment due in two days, and I can study three hours every evening."></textarea>
+
+          <div class="field-row">
+            <label>
+              Study hours/day
+              <input id="hoursPerDay" type="number" min="1" max="12" value="3" />
+            </label>
+            <label>
+              Preferred time
+              <select id="preferredWindow">
+                <option value="morning">Morning</option>
+                <option value="afternoon">Afternoon</option>
+                <option value="evening" selected>Evening</option>
+                <option value="night">Night</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button id="generateBtn" class="primary-btn">Generate schedule</button>
+            <button id="sampleBtn" class="ghost-btn">Use sample</button>
+          </div>
+          <button id="rescheduleBtn" class="secondary-btn">Adaptive reschedule</button>
+        </div>
+
+        <div class="panel stats-panel">
+          <h2>Study snapshot</h2>
+          <div class="stat-grid">
+            <div>
+              <span class="stat-label">Urgent tasks</span>
+              <strong id="urgentCount">0</strong>
+            </div>
+            <div>
+              <span class="stat-label">Total hours</span>
+              <strong id="totalHours">0h</strong>
+            </div>
+            <div>
+              <span class="stat-label">Focus score</span>
+              <strong id="focusScore">0%</strong>
+            </div>
+            <div>
+              <span class="stat-label">Breaks</span>
+              <strong id="breakCount">0</strong>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">AI-generated plan</p>
+            <h2 id="planTitle">Your optimized timetable</h2>
+          </div>
+          <div class="badge" id="statusBadge">Ready</div>
+        </header>
+
+        <section class="hero-card">
+          <div>
+            <p class="eyebrow">Task analysis</p>
+            <h3 id="summaryTitle">Priority overview</h3>
+          </div>
+          <ul id="taskList" class="task-list"></ul>
+        </section>
+
+        <section class="schedule-section">
+          <div class="section-header">
+            <h3>Weekly timetable</h3>
+            <span id="windowLabel">Evening sessions</span>
+          </div>
+          <div id="scheduleGrid" class="schedule-grid"></div>
+        </section>
+
+        <section class="recommendations">
+          <div class="section-header">
+            <h3>Recommendations</h3>
+          </div>
+          <ul id="recommendationList" class="recommendation-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

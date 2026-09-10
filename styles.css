@@ -1,0 +1,366 @@
+:root {
+  --bg: #0b1020;
+  --bg-alt: #111a2d;
+  --panel: rgba(17, 26, 45, 0.9);
+  --panel-2: rgba(20, 33, 57, 0.8);
+  --primary: #7c9cff;
+  --primary-strong: #5d7dff;
+  --secondary: #34d399;
+  --warning: #fbbf24;
+  --danger: #fb7185;
+  --text: #ecf3ff;
+  --muted: #a8b6d8;
+  --line: rgba(255, 255, 255, 0.08);
+  --shadow: 0 24px 60px rgba(8, 12, 24, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at top, #141d31 0%, var(--bg) 45%);
+  color: var(--text);
+}
+
+body {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+.page-shell {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 22px;
+}
+
+.sidebar,
+.main-panel {
+  background: rgba(10, 15, 28, 0.75);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.sidebar {
+  padding: 20px;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.brand-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), #7be0ff);
+  color: #08111e;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.brand-wrap h1,
+.topbar h2,
+.hero-card h3,
+.section-header h3 {
+  margin: 0;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.panel h2 {
+  margin-top: 0;
+  margin-bottom: 14px;
+  font-size: 1.1rem;
+}
+
+textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  background: rgba(12, 18, 29, 0.96);
+  border-radius: 14px;
+  color: var(--text);
+  padding: 14px 16px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+input, select {
+  border: 1px solid var(--line);
+  background: rgba(12, 18, 29, 0.96);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 11px 12px;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+button {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  color: #eef4ff;
+  flex: 1;
+  font-weight: 700;
+}
+
+.ghost-btn {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.secondary-btn {
+  width: 100%;
+  margin-top: 12px;
+  background: rgba(52, 211, 153, 0.1);
+  color: #c8ffe7;
+  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+
+.stats-panel .stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.stat-grid > div {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.stat-label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.74rem;
+  margin-bottom: 8px;
+}
+
+.main-panel {
+  padding: 24px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.badge {
+  background: rgba(124, 156, 255, 0.12);
+  border: 1px solid rgba(124, 156, 255, 0.3);
+  color: #dfe8ff;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.hero-card,
+.recommendations,
+.schedule-section {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 22px;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.task-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+
+.task-pill {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+#windowLabel {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.day-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.day-header {
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  background: rgba(124, 156, 255, 0.08);
+}
+
+.day-header strong {
+  font-size: 1rem;
+}
+
+.day-header span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.day-body {
+  padding: 16px;
+}
+
+.session {
+  padding: 12px 10px;
+  border-radius: 10px;
+  background: rgba(124, 156, 255, 0.06);
+  border: 1px solid rgba(124, 156, 255, 0.15);
+  margin-bottom: 10px;
+}
+
+.session:last-child {
+  margin-bottom: 0;
+}
+
+.session-time {
+  font-size: 0.72rem;
+  color: #dbe7ff;
+  margin-bottom: 6px;
+}
+
+.session-title {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.session-meta {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.break-row {
+  color: var(--warning);
+  font-weight: 600;
+  font-size: 0.78rem;
+  padding: 8px 0 0;
+}
+
+.recommendation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.recommendation-list li {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+
+@media (max-width: 980px) {
+  .page-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-grid {
+    grid-template-columns: 1fr;
+  }
+}
