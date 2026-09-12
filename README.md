@@ -1,4 +1,4 @@
-# NK Scheduler
+# Way to Success
 
 A lightweight AI-style study planner that turns natural-language academic requirements into an adaptive weekly timetable.
 

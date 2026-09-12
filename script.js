@@ -330,7 +330,7 @@ function setupVoiceInput() {
     }
     const messages = {
       'not-allowed': 'Microphone permission was blocked. Allow access and try again.',
-      'network': 'This browser cannot reach its speech-recognition service. Open NK Scheduler in Chrome or Edge and allow microphone access.',
+      'network': 'This browser cannot reach its speech-recognition service. Open Way to Success in Chrome or Edge and allow microphone access.',
       'no-speech': 'No speech detected. Try speaking again.',
       'audio-capture': 'No microphone was found. Check your microphone and try again.'
     };
