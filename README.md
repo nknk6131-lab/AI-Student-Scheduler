@@ -18,11 +18,11 @@ Open the project folder in a browser, then load `index.html` directly.
 For a local web server:
 
 ```bash
-cd "C:\Users\Nandhakishore N\Vs project\AI Student scheduler"
-python -m http.server 8000
+cd "AI Student scheduler"
+python -m http.server 5500
 ```
 
-Then open http://localhost:8000
+Then open http://localhost:5500
 
 ## Example prompt
 
