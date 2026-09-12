@@ -1,4 +1,4 @@
-# AI-Generated Student Scheduler
+# NK Scheduler
 
 A lightweight AI-style study planner that turns natural-language academic requirements into an adaptive weekly timetable.
 

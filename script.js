@@ -1,6 +1,7 @@
-const sampleInput = 'I have a DSA exam in five days, a DBMS assignment due in two days, and I can study three hours every evening.';
+﻿const sampleInput = 'I have a DSA exam in five days, a DBMS assignment due in two days, and I can study three hours every evening.';
 
 const HOURS_TO_MINUTES = 60;
+const VALID_WINDOWS = ['morning', 'afternoon', 'evening', 'night'];
 const TASK_TYPES = {
   exam: { label: 'Exam', color: '#fb7185' },
   assignment: { label: 'Assignment', color: '#fbbf24' },
@@ -8,6 +9,18 @@ const TASK_TYPES = {
   quiz: { label: 'Quiz', color: '#34d399' },
   revision: { label: 'Revision', color: '#a78bfa' },
   reading: { label: 'Reading', color: '#22d3ee' }
+};
+
+const TRANSLATIONS = {
+  en: { welcome: 'Welcome to the Academy', loginTitle: 'Enter the Magical Study Gate', studentEmail: 'Student Email', magicPassword: 'Magic Password', pasteLogin: '▣ Paste login details', enterTimetable: 'Enter the timetable', language: 'Language', aiPlanner: 'AI Planner', studyHours: 'Study hours/day', preferredTime: 'Preferred time', generateSchedule: 'Generate schedule', useSample: 'Use sample', adaptiveReschedule: 'Adaptive reschedule', studySnapshot: 'Study snapshot', urgentTasks: 'Urgent tasks', totalHours: 'Total hours', focusScore: 'Focus score', breaks: 'Breaks', academyProgression: 'Academy progression', aiGeneratedPlan: 'AI-generated plan', optimizedTimetable: 'Your optimized timetable', planner: 'Planner', quests: 'Quests', calendar: 'Calendar', timetable: 'Timetable', insights: 'Insights', taskAnalysis: 'Task analysis', priorityOverview: 'Priority overview', missionCalendar: 'Mission calendar', today: 'Today', tomorrow: 'Tomorrow', addTask: '＋ Add task', optimizeFromCalendar: '✦ Optimize timetable from calendar', weeklyTimetable: 'Weekly timetable', recommendations: 'Recommendations', plannerContext: 'Describe your deadlines and study availability. Saved calendar tasks are included automatically.', plannerPlaceholder: 'Example: I have a DSA exam in five days, a DBMS assignment due in two days, and I can study three hours every evening.', dailyTaskPlaceholder: 'Add a task for the selected day', sun: 'Sun', mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', morning: 'Morning', afternoon: 'Afternoon', evening: 'Evening', night: 'Night', voiceStart: '● Start voice input', voiceReady: 'Voice input ready' },
+  ta: { welcome: 'அகாடமிக்கு வரவேற்கிறோம்', loginTitle: 'மாய படிப்பு வாயிலில் நுழைக', studentEmail: 'மாணவர் மின்னஞ்சல்', magicPassword: 'கடவுச்சொல்', pasteLogin: '▣ உள்நுழைவு விவரங்களை ஒட்டுக', enterTimetable: 'அட்டவணைக்குள் நுழைக', language: 'மொழி', aiPlanner: 'AI திட்டமிடுபவர்', studyHours: 'படிப்பு மணி / நாள்', preferredTime: 'விருப்ப நேரம்', generateSchedule: 'அட்டவணையை உருவாக்கு', useSample: 'மாதிரியை பயன்படுத்து', adaptiveReschedule: 'மாற்றியமைத்து அட்டவணையிடு', studySnapshot: 'படிப்பு சுருக்கம்', urgentTasks: 'அவசர பணிகள்', totalHours: 'மொத்த மணி', focusScore: 'கவன மதிப்பெண்', breaks: 'இடைவேளைகள்', academyProgression: 'அகாடமி முன்னேற்றம்', aiGeneratedPlan: 'AI உருவாக்கிய திட்டம்', optimizedTimetable: 'உங்கள் மேம்படுத்திய அட்டவணை', planner: 'திட்டமிடுபவர்', quests: 'பணிகள்', calendar: 'நாட்காட்டி', timetable: 'அட்டவணை', insights: 'பரிந்துரைகள்', taskAnalysis: 'பணி பகுப்பாய்வு', priorityOverview: 'முன்னுரிமை கண்ணோட்டம்', missionCalendar: 'பணி நாட்காட்டி', today: 'இன்று', tomorrow: 'நாளை', addTask: '＋ பணியை சேர்', optimizeFromCalendar: '✦ நாட்காட்டியிலிருந்து அட்டவணையை மேம்படுத்து', weeklyTimetable: 'வார அட்டவணை', recommendations: 'பரிந்துரைகள்', plannerContext: 'உங்கள் காலக்கெடுக்கள் மற்றும் படிப்பு நேரத்தை குறிப்பிடுங்கள். நாட்காட்டி பணிகள் தானாக சேர்க்கப்படும்.', plannerPlaceholder: 'எடுத்துக்காட்டு: ஐந்து நாட்களில் DSA தேர்வு, இரண்டு நாட்களில் DBMS பணி...', dailyTaskPlaceholder: 'தேர்ந்தெடுத்த நாளுக்கான பணியை சேர்க்கவும்', sun: 'ஞா', mon: 'தி', tue: 'செ', wed: 'பு', thu: 'வி', fri: 'வெ', sat: 'ச', voiceStart: '● குரல் உள்ளீட்டை தொடங்கு', voiceReady: 'குரல் உள்ளீடு தயார்' },
+  ml: { language: 'ഭാഷ', aiPlanner: 'AI പ്ലാനർ', generateSchedule: 'ഷെഡ്യൂൾ സൃഷ്ടിക്കുക', useSample: 'സാമ്പിൾ ഉപയോഗിക്കുക', calendar: 'കലണ്ടർ', timetable: 'ടൈംടേബിൾ', today: 'ഇന്ന്', tomorrow: 'നാളെ', addTask: '＋ ടാസ്ക് ചേർക്കുക', weeklyTimetable: 'ആഴ്ച ടൈംടേബിൾ', recommendations: 'ശുപാർശകൾ', morning: 'രാവിലെ', afternoon: 'ഉച്ചയ്ക്ക്', evening: 'വൈകുന്നേരം', night: 'രാത്രി' },
+  te: { language: 'భాష', aiPlanner: 'AI ప్లానర్', generateSchedule: 'షెడ్యూల్ రూపొందించు', useSample: 'నమూనా వాడు', calendar: 'క్యాలెండర్', timetable: 'టైమ్‌టేబుల్', today: 'ఈ రోజు', tomorrow: 'రేపు', addTask: '＋ టాస్క్ జోడించు', weeklyTimetable: 'వారపు టైమ్‌టేబుల్', recommendations: 'సిఫార్సులు', morning: 'ఉదయం', afternoon: 'మధ్యాహ్నం', evening: 'సాయంత్రం', night: 'రాత్రి' },
+  kn: { language: 'ಭಾಷೆ', aiPlanner: 'AI ಪ್ಲಾನರ್', generateSchedule: 'ವೇಳಾಪಟ್ಟಿ ರಚಿಸಿ', useSample: 'ಮಾದರಿ ಬಳಸಿ', calendar: 'ಕ್ಯಾಲೆಂಡರ್', timetable: 'ವೇಳಾಪಟ್ಟಿ', today: 'ಇಂದು', tomorrow: 'ನಾಳೆ', addTask: '＋ ಕಾರ್ಯ ಸೇರಿಸಿ', weeklyTimetable: 'ವಾರದ ವೇಳಾಪಟ್ಟಿ', recommendations: 'ಶಿಫಾರಸುಗಳು', morning: 'ಬೆಳಗ್ಗೆ', afternoon: 'ಮಧ್ಯಾಹ್ನ', evening: 'ಸಂಜೆ', night: 'ರಾತ್ರಿ' },
+  hi: { language: 'भाषा', aiPlanner: 'AI योजनाकार', generateSchedule: 'समय-सारणी बनाएं', useSample: 'नमूना उपयोग करें', calendar: 'कैलेंडर', timetable: 'समय-सारणी', today: 'आज', tomorrow: 'कल', addTask: '＋ कार्य जोड़ें', weeklyTimetable: 'साप्ताहिक समय-सारणी', recommendations: 'सुझाव', morning: 'सुबह', afternoon: 'दोपहर', evening: 'शाम', night: 'रात' },
+  ja: { language: '言語', aiPlanner: 'AIプランナー', generateSchedule: '予定を作成', useSample: 'サンプルを使用', calendar: 'カレンダー', timetable: '時間割', today: '今日', tomorrow: '明日', addTask: '＋ タスクを追加', weeklyTimetable: '週間時間割', recommendations: 'おすすめ', morning: '朝', afternoon: '午後', evening: '夕方', night: '夜' },
+  fr: { language: 'Langue', aiPlanner: 'Planificateur IA', generateSchedule: 'Générer le planning', useSample: 'Utiliser un exemple', calendar: 'Calendrier', timetable: 'Emploi du temps', today: "Aujourd’hui", tomorrow: 'Demain', addTask: '＋ Ajouter une tâche', weeklyTimetable: 'Planning hebdomadaire', recommendations: 'Recommandations', morning: 'Matin', afternoon: 'Après-midi', evening: 'Soir', night: 'Nuit' },
+  zh: { language: '语言', aiPlanner: 'AI 计划', generateSchedule: '生成日程', useSample: '使用示例', calendar: '日历', timetable: '时间表', today: '今天', tomorrow: '明天', addTask: '＋ 添加任务', weeklyTimetable: '每周时间表', recommendations: '建议', morning: '早上', afternoon: '下午', evening: '傍晚', night: '晚上' }
 };
 
 const inputText = document.getElementById('inputText');
@@ -25,11 +38,501 @@ const focusScore = document.getElementById('focusScore');
 const breakCount = document.getElementById('breakCount');
 const statusBadge = document.getElementById('statusBadge');
 const windowLabel = document.getElementById('windowLabel');
+const loginForm = document.getElementById('loginForm');
+const loginWarning = document.getElementById('loginWarning');
+const pasteLoginBtn = document.getElementById('pasteLoginBtn');
+const clipboardFallback = document.getElementById('clipboardFallback');
+const clipboardInput = document.getElementById('clipboardInput');
+const applyPasteBtn = document.getElementById('applyPasteBtn');
+const loginScreen = document.getElementById('loginScreen');
+const appShell = document.getElementById('appShell');
+const studentEmail = document.getElementById('studentEmail');
+const passwordInput = document.getElementById('password');
+const languageSelect = document.getElementById('languageSelect');
+const levelValue = document.getElementById('levelValue');
+const xpValue = document.getElementById('xpValue');
+const nextLevelText = document.getElementById('nextLevelText');
+const xpBar = document.getElementById('xpBar');
+const unlockStatus = document.getElementById('unlockStatus');
+const characterCard = document.getElementById('characterCard');
+const characterAvatar = document.getElementById('characterAvatar');
+const characterName = document.getElementById('characterName');
+const characterDescription = document.getElementById('characterDescription');
+const calendarTitle = document.getElementById('calendarTitle');
+const calendarGrid = document.getElementById('calendarGrid');
+const holidayList = document.getElementById('holidayList');
+const previousMonthBtn = document.getElementById('previousMonthBtn');
+const todayBtn = document.getElementById('todayBtn');
+const nextMonthBtn = document.getElementById('nextMonthBtn');
+const previousDayBtn = document.getElementById('previousDayBtn');
+const nextDayBtn = document.getElementById('nextDayBtn');
+const selectedDateLabel = document.getElementById('selectedDateLabel');
+const dailyTaskInput = document.getElementById('dailyTaskInput');
+const dailyTaskTime = document.getElementById('dailyTaskTime');
+const addDailyTaskBtn = document.getElementById('addDailyTaskBtn');
+const selectedTaskList = document.getElementById('selectedTaskList');
+const optimizeCalendarBtn = document.getElementById('optimizeCalendarBtn');
+const plannerContextNote = document.getElementById('plannerContextNote');
+const voiceInputBtn = document.getElementById('voiceInputBtn');
+const voiceStatus = document.getElementById('voiceStatus');
 
 const state = {
   schedule: [],
-  tasks: []
+  tasks: [],
+  xp: 0,
+  completedTaskIds: new Set(),
+  calendarDate: new Date(),
+  selectedDate: new Date(),
+  dailyTasks: JSON.parse(localStorage.getItem('AIStudentSchedulerDailyTasks') || '{}')
 };
+
+const HERO_UNLOCKS = [
+  { level: 10, name: 'Naruto', avatar: 'N', description: 'The determined shinobi joins your study squad.' },
+  { level: 20, name: 'Sailor Moon', avatar: 'S', description: 'A guardian of focus and late-night revision.' },
+  { level: 30, name: 'Luffy', avatar: 'L', description: 'Your fearless captain for ambitious projects.' }
+];
+
+const CALENDAR_YEAR = new Date().getFullYear();
+const HOLIDAY_YEAR_START = CALENDAR_YEAR - 10;
+const HOLIDAY_YEAR_END = CALENDAR_YEAR + 10;
+
+const TAMIL_NADU_HOLIDAYS_2026 = {
+  '2026-01-01': 'New Year',
+  '2026-01-15': 'Pongal',
+  '2026-01-16': 'Thiruvalluvar Day',
+  '2026-01-17': 'Uzhavar Thirunal',
+  '2026-01-26': 'Republic Day',
+  '2026-02-01': 'Thai Poosam',
+  '2026-03-19': 'Telugu New Year',
+  '2026-03-21': 'Ramzan / Id-ul-Fitr',
+  '2026-03-31': 'Mahavir Jayanti',
+  '2026-04-03': 'Good Friday',
+  '2026-04-14': 'Tamil New Year',
+  '2026-05-01': 'May Day',
+  '2026-05-27': 'Bakrid',
+  '2026-06-26': 'Muharram',
+  '2026-08-15': 'Independence Day',
+  '2026-09-04': 'Krishna Jayanthi',
+  '2026-09-14': 'Vinayagar Chaturthi',
+  '2026-10-02': 'Gandhi Jayanthi',
+  '2026-10-19': 'Ayutha Pooja',
+  '2026-10-20': 'Vijaya Dasami',
+  '2026-11-08': 'Deepavali',
+  '2026-12-25': 'Christmas'
+};
+
+const TAMIL_NADU_RECURRING_HOLIDAYS = {
+  '01-01': 'New Year',
+  '01-15': 'Pongal',
+  '01-16': 'Thiruvalluvar Day',
+  '01-17': 'Uzhavar Thirunal',
+  '01-26': 'Republic Day',
+  '04-14': 'Tamil New Year',
+  '05-01': 'May Day',
+  '08-15': 'Independence Day',
+  '10-02': 'Gandhi Jayanthi',
+  '12-25': 'Christmas'
+};
+
+const TAMIL_NADU_HOLIDAY_OVERRIDES = {
+  2024: {
+    '01-25': 'Thai Poosam', '03-29': 'Good Friday', '04-09': 'Telugu New Year',
+    '04-10': 'Ramzan / Id-ul-Fitr', '04-14': 'Tamil New Year', '04-17': 'Mahavir Jayanti',
+    '06-17': 'Bakrid', '07-17': 'Muharram', '08-26': 'Krishna Jayanthi',
+    '09-07': 'Vinayagar Chaturthi', '09-16': 'Milad-un-Nabi', '10-11': 'Ayutha Pooja',
+    '10-12': 'Vijaya Dasami', '10-31': 'Deepavali'
+  },
+  2025: {
+    '02-11': 'Thai Poosam', '03-31': 'Ramzan / Id-ul-Fitr', '04-14': 'Tamil New Year',
+    '04-18': 'Good Friday', '06-07': 'Bakrid', '07-06': 'Muharram',
+    '08-16': 'Krishna Jayanthi', '08-27': 'Vinayagar Chaturthi', '09-05': 'Milad-un-Nabi',
+    '10-01': 'Ayutha Pooja', '10-02': 'Vijaya Dasami', '10-20': 'Deepavali'
+  },
+  2027: {
+    '01-22': 'Thai Poosam', '03-09': 'Ramzan / Id-ul-Fitr', '03-26': 'Good Friday',
+    '04-14': 'Tamil New Year', '05-17': 'Bakrid', '06-16': 'Muharram',
+    '08-25': 'Krishna Jayanthi', '09-04': 'Vinayagar Chaturthi', '10-08': 'Ayutha Pooja',
+    '10-09': 'Vijaya Dasami', '10-29': 'Deepavali'
+  }
+};
+
+function getTamilNaduHolidayName(date) {
+  const year = date.getFullYear();
+  const dateKey = `${year}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const monthDay = dateKey.slice(5);
+  return TAMIL_NADU_HOLIDAY_FEED[year]?.[monthDay] || '';
+}
+
+function isHolidayDataYear(year) {
+  return year >= HOLIDAY_YEAR_START && year <= HOLIDAY_YEAR_END;
+}
+
+function getHolidayDataStatus(year) {
+  if (year > CALENDAR_YEAR) return 'Projected dates · verify against the official Tamil Nadu Gazette';
+  return 'Published and recurring holiday entries';
+}
+
+function getHolidayCategory(name) {
+  if (/Republic|Independence|Gandhi|May Day|New Year|Christmas/i.test(name)) return 'government';
+  if (/Pongal|Tamil New Year|Thiruvalluvar|Uzhavar|Ayutha|Vijaya|Vinayagar|Krishna|Telugu/i.test(name)) return 'regional';
+  return 'devotional';
+}
+
+function buildTamilNaduHolidayFeed() {
+  const feed = {};
+
+  for (let year = HOLIDAY_YEAR_START; year <= HOLIDAY_YEAR_END; year += 1) {
+    feed[year] = { ...TAMIL_NADU_RECURRING_HOLIDAYS };
+
+    Object.entries(TAMIL_NADU_HOLIDAY_OVERRIDES[year] || {}).forEach(([monthDay, name]) => {
+      feed[year][monthDay] = name;
+    });
+
+    if (year === CALENDAR_YEAR) {
+      Object.entries(TAMIL_NADU_HOLIDAYS_2026).forEach(([dateKey, name]) => {
+        feed[year][dateKey.slice(5)] = name;
+      });
+    }
+  }
+
+  return feed;
+}
+
+const TAMIL_NADU_HOLIDAY_FEED = buildTamilNaduHolidayFeed();
+
+const savedProgress = JSON.parse(localStorage.getItem('AIStudentSchedulerProgress') || '{}');
+state.xp = Number(savedProgress.xp) || 0;
+state.completedTaskIds = new Set(Array.isArray(savedProgress.completedTaskIds) ? savedProgress.completedTaskIds : []);
+
+function saveProgress() {
+  localStorage.setItem('AIStudentSchedulerProgress', JSON.stringify({
+    xp: state.xp,
+    completedTaskIds: [...state.completedTaskIds]
+  }));
+}
+
+function getDateKey(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function saveDailyTasks() {
+  localStorage.setItem('AIStudentSchedulerDailyTasks', JSON.stringify(state.dailyTasks));
+}
+
+function getCalendarTasksForPlan() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return Object.entries(state.dailyTasks).flatMap(([dateKey, tasks]) => {
+    const taskDate = new Date(`${dateKey}T00:00:00`);
+    const dueInDays = Math.max(1, Math.min(7, Math.ceil((taskDate - today) / 86400000) + 1));
+
+    return tasks.map((task) => ({
+      id: `calendar-${dateKey}-${task.id}`,
+      name: task.title,
+      type: 'revision',
+      dueInDays,
+      priority: dueInDays <= 2 ? 88 : dueInDays <= 4 ? 74 : 62,
+      duration: 45,
+      progress: 0,
+      calendarDate: dateKey,
+      calendarTime: task.time
+    }));
+  });
+}
+
+const USER_DB_NAME = 'AIStudentSchedulerDB';
+const USER_STORE_NAME = 'users';
+
+let ambientMusicEnabled = false;
+let ambientMusicTimer = null;
+let activeLanguage = 'en';
+let speechRecognition = null;
+let voiceBaseText = '';
+let voiceRetryCount = 0;
+
+const SPEECH_LANGUAGES = {
+  en: 'en-US', ta: 'ta-IN', ml: 'ml-IN', te: 'te-IN', kn: 'kn-IN',
+  hi: 'hi-IN', ja: 'ja-JP', fr: 'fr-FR', zh: 'zh-CN'
+};
+
+function translate(key, fallback = '') {
+  return { ...TRANSLATIONS.en, ...TRANSLATIONS[activeLanguage] }[key] || fallback;
+}
+
+function applyLanguage(language) {
+  const selectedLanguage = TRANSLATIONS[language] ? language : 'en';
+  const translation = { ...TRANSLATIONS.en, ...TRANSLATIONS[selectedLanguage] };
+  activeLanguage = selectedLanguage;
+  document.documentElement.lang = selectedLanguage;
+  document.querySelectorAll('[data-i18n]').forEach((element) => {
+    const key = element.dataset.i18n;
+    if (translation[key]) element.textContent = translation[key];
+  });
+  document.querySelectorAll('[data-placeholder-i18n]').forEach((element) => {
+    const key = element.dataset.placeholderI18n;
+    if (translation[key]) element.placeholder = translation[key];
+  });
+  languageSelect.value = selectedLanguage;
+  if (speechRecognition) speechRecognition.lang = SPEECH_LANGUAGES[selectedLanguage];
+  localStorage.setItem('NKSchedulerLanguage', selectedLanguage);
+}
+
+function setupVoiceInput() {
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Recognition) {
+    voiceInputBtn.disabled = true;
+    voiceStatus.textContent = 'Voice input is not supported in this browser';
+    return;
+  }
+
+  speechRecognition = new Recognition();
+  speechRecognition.continuous = true;
+  speechRecognition.interimResults = true;
+  speechRecognition.lang = SPEECH_LANGUAGES[activeLanguage];
+
+  speechRecognition.onstart = () => {
+    voiceInputBtn.textContent = '■ Stop voice input';
+    voiceInputBtn.classList.add('listening');
+    voiceStatus.textContent = `Listening in ${languageSelect.options[languageSelect.selectedIndex].text}...`;
+  };
+
+  speechRecognition.onresult = (event) => {
+    let finalText = '';
+    let interimText = '';
+    for (let index = event.resultIndex; index < event.results.length; index += 1) {
+      const transcript = event.results[index][0].transcript;
+      if (event.results[index].isFinal) finalText += transcript;
+      else interimText += transcript;
+    }
+
+    if (finalText) {
+      inputText.value = `${voiceBaseText}${voiceBaseText ? ' ' : ''}${finalText.trim()}`.trim();
+      voiceBaseText = inputText.value;
+    }
+    voiceStatus.textContent = interimText ? `Hearing: ${interimText}` : 'Voice captured';
+  };
+
+  speechRecognition.onerror = (event) => {
+    if (event.error === 'network' && voiceRetryCount === 0) {
+      voiceRetryCount += 1;
+      speechRecognition.abort();
+      voiceStatus.textContent = 'Retrying voice recognition...';
+      window.setTimeout(() => {
+        speechRecognition.lang = activeLanguage === 'en' ? 'en-IN' : SPEECH_LANGUAGES[activeLanguage];
+        try {
+          speechRecognition.start();
+        } catch (error) {
+          voiceStatus.textContent = 'Voice recognition could not restart. Use Chrome or Edge with microphone access.';
+        }
+      }, 250);
+      return;
+    }
+    const messages = {
+      'not-allowed': 'Microphone permission was blocked. Allow access and try again.',
+      'network': 'This browser cannot reach its speech-recognition service. Open NK Scheduler in Chrome or Edge and allow microphone access.',
+      'no-speech': 'No speech detected. Try speaking again.',
+      'audio-capture': 'No microphone was found. Check your microphone and try again.'
+    };
+    voiceStatus.textContent = messages[event.error] || 'Voice input is unavailable. You can type in the planner instead.';
+    voiceInputBtn.classList.remove('listening');
+    voiceInputBtn.textContent = translate('voiceStart', '● Start voice input');
+  };
+
+  speechRecognition.onend = () => {
+    voiceInputBtn.classList.remove('listening');
+    voiceInputBtn.textContent = translate('voiceStart', '● Start voice input');
+    if (voiceStatus.textContent.startsWith('Listening')) voiceStatus.textContent = 'Voice input ready';
+  };
+}
+
+function toggleVoiceInput() {
+  if (!speechRecognition) {
+    setupVoiceInput();
+    if (!speechRecognition) return;
+  }
+
+  if (voiceInputBtn.classList.contains('listening')) {
+    speechRecognition.stop();
+    return;
+  }
+
+  voiceBaseText = inputText.value.trim();
+  voiceRetryCount = 0;
+  speechRecognition.lang = SPEECH_LANGUAGES[activeLanguage];
+  try {
+    speechRecognition.start();
+  } catch (error) {
+    voiceStatus.textContent = 'Voice input is already starting. Please try again in a moment.';
+  }
+}
+
+function applyClipboardText(clipboardText) {
+  const parts = String(clipboardText || '').trim().split(/\r?\n|\t/).map((part) => part.trim()).filter(Boolean);
+  const email = parts.find((part) => /\S+@\S+\.\S+/.test(part));
+  const password = parts.find((part) => part !== email);
+
+  if (!email || !password) {
+    loginWarning.textContent = 'Use two lines: email first, password second.';
+    clipboardFallback.hidden = false;
+    clipboardInput.focus();
+    return false;
+  }
+
+  studentEmail.value = email;
+  passwordInput.value = password;
+  clipboardFallback.hidden = true;
+  loginWarning.textContent = 'Login details pasted. Press Enter the timetable to continue.';
+  return true;
+}
+
+async function pasteLoginDetails() {
+  if (!navigator.clipboard?.readText) {
+    clipboardFallback.hidden = false;
+    clipboardInput.focus();
+    loginWarning.textContent = 'Paste your copied email and password into the box below.';
+    return;
+  }
+
+  try {
+    const clipboardText = await Promise.race([
+      navigator.clipboard.readText(),
+      new Promise((_, reject) => window.setTimeout(() => reject(new Error('Clipboard read timed out.')), 1200))
+    ]);
+    applyClipboardText(clipboardText);
+  } catch (error) {
+    console.warn('Clipboard read unavailable:', error);
+    clipboardFallback.hidden = false;
+    clipboardInput.focus();
+    loginWarning.textContent = 'Press Ctrl+V in the box below, then choose Use pasted details.';
+  }
+}
+
+function normalizeEmail(email) {
+  return String(email || '').trim().toLowerCase();
+}
+
+function openUserDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(USER_DB_NAME, 1);
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(USER_STORE_NAME)) {
+        const store = db.createObjectStore(USER_STORE_NAME, { keyPath: 'email' });
+        store.createIndex('passwordIndex', 'password', { unique: false });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error('Unable to open user database.'));
+  });
+}
+
+function saveUserRecord(email, password) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await openUserDatabase();
+      const transaction = db.transaction(USER_STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(USER_STORE_NAME);
+      const userRecord = {
+        email: normalizeEmail(email),
+        password: String(password || '').trim(),
+        createdAt: new Date().toISOString()
+      };
+
+      const request = store.put(userRecord);
+      request.onsuccess = () => {
+        db.close();
+        resolve(userRecord);
+      };
+      request.onerror = () => {
+        db.close();
+        reject(request.error || new Error('Unable to save user data.'));
+      };
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+function getUserRecord(email) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await openUserDatabase();
+      const transaction = db.transaction(USER_STORE_NAME, 'readonly');
+      const store = transaction.objectStore(USER_STORE_NAME);
+      const request = store.get(normalizeEmail(email));
+
+      request.onsuccess = () => {
+        db.close();
+        resolve(request.result || null);
+      };
+      request.onerror = () => {
+        db.close();
+        reject(request.error || new Error('Unable to load user data.'));
+      };
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+function startAmbientMusic() {
+  if (ambientMusicEnabled) return;
+
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+
+  const audioContext = new AudioCtx();
+  const masterGain = audioContext.createGain();
+  masterGain.gain.value = 0.05;
+  masterGain.connect(audioContext.destination);
+
+  const melody = [220, 246.94, 293.66, 329.63, 293.66, 246.94, 196, 220];
+  let noteIndex = 0;
+
+  const playNote = () => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    const frequency = melody[noteIndex % melody.length];
+
+    oscillator.type = 'triangle';
+    oscillator.frequency.value = frequency;
+    gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.12, audioContext.currentTime + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.7);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(masterGain);
+
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.8);
+    noteIndex += 1;
+  };
+
+  ambientMusicTimer = window.setInterval(playNote, 420);
+  ambientMusicEnabled = true;
+
+  const resumeAudio = () => {
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+  };
+
+  window.addEventListener('pointerdown', resumeAudio, { once: true });
+}
+
+function normalizeHoursPerDay(rawValue, fallback = 3) {
+  const parsedValue = Number(rawValue);
+  if (!Number.isFinite(parsedValue)) return fallback;
+  return Math.min(12, Math.max(1, Math.round(parsedValue)));
+}
+
+function normalizePreferredWindow(rawValue, fallback = 'evening') {
+  const normalized = String(rawValue || fallback).trim().toLowerCase();
+  return VALID_WINDOWS.includes(normalized) ? normalized : fallback;
+}
 
 function parseNaturalLanguage(input) {
   const normalized = input.trim();
@@ -42,31 +545,31 @@ function parseNaturalLanguage(input) {
   }
 
   const lower = normalized.toLowerCase();
-  const hoursMatch = lower.match(/study\s+(\d+(?:\.\d+)?)\s+hours?/i) || lower.match(/(\d+(?:\.\d+)?)\s+hours?\s+every/i);
-  const hoursPerDay = hoursMatch ? Number(hoursMatch[1]) : Number(hoursPerDayInput.value || 3);
+  const hoursMatch = lower.match(/study\s+(\d+(?:\.\d+)?)\s+hours?/i)
+    || lower.match(/(\d+(?:\.\d+)?)\s+hours?\s+every/i)
+    || lower.match(/(\d+(?:\.\d+)?)\s+hours?\s*\/\s*day/i);
+  const preferredTimeFromText = lower.match(/morning|afternoon|evening|night/i);
 
-  const windowMatch = lower.match(/morning|afternoon|evening|night/i);
-  const selectedWindow = windowMatch ? windowMatch[0].toLowerCase() : preferredWindow.value || 'evening';
+  const resolvedHours = hoursMatch
+    ? normalizeHoursPerDay(hoursMatch[1], Number(hoursPerDayInput.value || 3))
+    : normalizeHoursPerDay(hoursPerDayInput.value, 3);
+  const resolvedWindow = normalizePreferredWindow(
+    preferredWindow.value || (preferredTimeFromText ? preferredTimeFromText[0].toLowerCase() : 'evening'),
+    'evening'
+  );
 
   const tasks = [];
-  const clauses = normalized.split(/[,;]|and\b/).filter(Boolean);
+  const clauses = normalized.split(/[,;]|\s+and\s+|\s+plus\s+/i).filter(Boolean);
 
   clauses.forEach((clause) => {
-    const cleanedClause = clause.trim();
-    if (!cleanedClause) return;
+    const cleanedClause = clause.replace(/\s+/g, ' ').trim();
+    if (!cleanedClause || cleanedClause.length < 3) return;
+    if (/\b(?:study|studying|can study|will study)\s+\d+(?:\.\d+)?\s+hours?/i.test(cleanedClause)
+      || /\d+(?:\.\d+)?\s+hours?\s+(?:every|per)\b/i.test(cleanedClause)) return;
 
-    const daysMatch = cleanedClause.match(/(\d+)\s+day(?:s)?/i) || cleanedClause.match(/in\s+(\d+)\s+day(?:s)?/i);
-    const dueInDays = daysMatch ? Number(daysMatch[1]) : 3;
-
-    let type = 'revision';
-    if (/exam/i.test(cleanedClause)) type = 'exam';
-    else if (/assignment/i.test(cleanedClause)) type = 'assignment';
-    else if (/project/i.test(cleanedClause)) type = 'project';
-    else if (/quiz/i.test(cleanedClause)) type = 'quiz';
-    else if (/reading|chapter|notes/i.test(cleanedClause)) type = 'reading';
-
-    const name = cleanedClause.replace(/^(i have|i need|i am|there is|there are|and)/i, '').trim();
-    const taskName = name || `${type.charAt(0).toUpperCase() + type.slice(1)} task`;
+    const dueInDays = extractDueInDays(cleanedClause) || 3;
+    const type = detectTaskType(cleanedClause);
+    const taskName = buildTaskName(cleanedClause, type);
 
     tasks.push({
       id: crypto.randomUUID ? crypto.randomUUID() : `task-${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -81,37 +584,71 @@ function parseNaturalLanguage(input) {
 
   return {
     tasks: tasks.length ? tasks : createDefaultTasks(),
-    hoursPerDay,
-    preferredWindow: selectedWindow
+    hoursPerDay: resolvedHours,
+    preferredWindow: resolvedWindow
   };
 }
 
+function extractDueInDays(text) {
+  const match = text.match(/(?:in|within|after|for)\s+(\d+)\s+(?:day|days)/i)
+    || text.match(/(\d+)\s+(?:day|days)\s*(?:from now|left)?/i);
+
+  return match ? Number(match[1]) : null;
+}
+
+function detectTaskType(text) {
+  if (/exam|test|midterm|final/i.test(text)) return 'exam';
+  if (/assignment|homework|lab work|report/i.test(text)) return 'assignment';
+  if (/project|application|mini project/i.test(text)) return 'project';
+  if (/quiz|mcq|assessment/i.test(text)) return 'quiz';
+  if (/reading|chapter|notes|study materials/i.test(text)) return 'reading';
+  return 'revision';
+}
+
+function buildTaskName(text, type) {
+  const withoutNoise = text
+    .replace(/^(i have|i need|i am|there is|there are|i can|i will|and)\s+/i, '')
+    .replace(/\b(?:study|studying|can study|have)\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .replace(/^(?:a|an|the)\s+/i, '')
+    .trim();
+
+  if (!withoutNoise) {
+    return `${type.charAt(0).toUpperCase() + type.slice(1)} task`;
+  }
+
+  return withoutNoise
+    .replace(/\s+(?:in|within|after|for)\s+\d+\s+(?:day|days)\b.*$/i, '')
+    .replace(/\s+(?:is|are|due)\b.*$/i, '')
+    .trim();
+}
+
 function estimatePriority(type, dueInDays) {
-  const urgencyBoost = Math.max(0, 10 - dueInDays) * 7;
   const typeScore = {
-    exam: 95,
-    assignment: 82,
+    exam: 96,
+    assignment: 84,
     project: 74,
-    quiz: 68,
-    reading: 46,
-    revision: 54
+    quiz: 70,
+    reading: 48,
+    revision: 58
   };
 
-  return Math.min(100, Math.round((typeScore[type] || 50) + urgencyBoost));
+  const urgencyLift = Math.max(0, 7 - dueInDays) * 6;
+  return Math.min(100, Math.round((typeScore[type] || 50) + urgencyLift));
 }
 
 function estimateDuration(type, dueInDays) {
   const base = {
-    exam: 80,
-    assignment: 70,
-    project: 90,
-    quiz: 50,
+    exam: 90,
+    assignment: 80,
+    project: 100,
+    quiz: 55,
     reading: 40,
-    revision: 55
+    revision: 60
   };
 
-  const urgencyPad = Math.max(0, 7 - dueInDays) * 10;
-  return Math.min(120, (base[type] || 50) + urgencyPad);
+  const urgencyBoost = dueInDays <= 2 ? 25 : dueInDays <= 5 ? 15 : 0;
+  return Math.min(140, (base[type] || 60) + urgencyBoost);
 }
 
 function createDefaultTasks() {
@@ -133,59 +670,87 @@ function getTimeLabel(windowName) {
   return windows[windowName] || windows.evening;
 }
 
+function formatInputTime(timeValue) {
+  if (!/^\d{2}:\d{2}$/.test(String(timeValue || ''))) return timeValue;
+  const [hourText, minuteText] = timeValue.split(':');
+  const hour = Number(hourText);
+  const meridian = hour >= 12 ? 'PM' : 'AM';
+  const friendlyHour = hour % 12 || 12;
+  return `${friendlyHour}:${minuteText} ${meridian}`;
+}
+
+function buildTaskSession(task, preferredWindowName, dayIndex, slotIndex) {
+  const slotOptions = getTimeLabel(preferredWindowName);
+  const startTime = task.calendarTime ? formatInputTime(task.calendarTime) : slotOptions[slotIndex % slotOptions.length];
+  const endTime = addMinutes(startTime, task.minutes);
+
+  return {
+    id: `${task.id}-${dayIndex}-${slotIndex}`,
+    time: `${startTime} - ${endTime}`,
+    title: task.name,
+    type: task.type,
+    minutes: task.minutes,
+    priority: task.priority
+  };
+}
+
 function generateSchedule(tasks, hoursPerDay, preferredWindowName) {
-  const sortedTasks = [...tasks].sort((a, b) => b.priority - a.priority);
-  const dayPlan = [];
-  const plannedTimes = getTimeLabel(preferredWindowName);
-  let breakCounter = 0;
+  const sortedTasks = [...tasks].sort((a, b) => b.priority - a.priority || a.dueInDays - b.dueInDays);
+  const capacityPerDay = hoursPerDay * HOURS_TO_MINUTES;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dayPlan = Array.from({ length: 7 }, (_, index) => ({
+    date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + index),
+    day: new Intl.DateTimeFormat('en', { weekday: 'short' }).format(new Date(today.getFullYear(), today.getMonth(), today.getDate() + index)),
+    sessions: [],
+    usedMinutes: 0
+  }));
 
-  for (let day = 0; day < 7; day += 1) {
-    const sessions = [];
-    const remainingMinutes = hoursPerDay * HOURS_TO_MINUTES;
-    let usedMinutes = 0;
-
-    sortedTasks.forEach((task, index) => {
-      if (usedMinutes >= remainingMinutes) return;
-      const isEarlyDeadline = task.dueInDays <= 3;
-      const baseDuration = isEarlyDeadline ? Math.min(task.duration, 60) : Math.min(task.duration, 50);
-      const sessionDuration = Math.min(baseDuration, remainingMinutes - usedMinutes);
-
-      if (sessionDuration <= 0) return;
-
-      const labelIndex = index % plannedTimes.length;
-      const slotStart = plannedTimes[labelIndex];
-      const slotEnd = addMinutes(slotStart, sessionDuration);
-      sessions.push({
-        time: `${slotStart} - ${slotEnd}`,
-        title: task.name,
-        type: task.type,
-        minutes: sessionDuration,
-        priority: task.priority
+  sortedTasks.forEach((task) => {
+    let remainingMinutes = task.duration;
+    const calendarDayIndex = task.calendarDate
+      ? Math.round((new Date(`${task.calendarDate}T00:00:00`) - today) / 86400000)
+      : null;
+    const preferredDay = calendarDayIndex === null ? Math.max(0, Math.min(6, task.dueInDays - 1)) : Math.max(0, Math.min(6, calendarDayIndex));
+    const preferredDayOrder = Array.from({ length: 7 }, (_, index) => index)
+      .sort((a, b) => {
+        const aDistance = Math.abs(a - preferredDay);
+        const bDistance = Math.abs(b - preferredDay);
+        if (aDistance !== bDistance) return aDistance - bDistance;
+        return a - b;
       });
-      usedMinutes += sessionDuration;
 
-      if (usedMinutes < remainingMinutes && sessions.length % 2 === 0) {
-        breakCounter += 1;
-        sessions.push({
-          time: `${addMinutes(slotEnd, 5)} break`,
-          title: 'Break',
-          type: 'break',
-          minutes: 10,
-          priority: 0
-        });
-        usedMinutes += 10;
+    while (remainingMinutes > 0) {
+      let placed = false;
+
+      for (const dayIndex of preferredDayOrder) {
+        const targetDay = dayPlan[dayIndex];
+        const available = capacityPerDay - targetDay.usedMinutes;
+        if (available <= 0) continue;
+
+        const chunkMinutes = Math.min(Math.max(30, Math.min(60, remainingMinutes)), available);
+        targetDay.sessions.push(buildTaskSession({ ...task, minutes: chunkMinutes }, preferredWindowName, dayIndex, targetDay.sessions.length));
+        targetDay.usedMinutes += chunkMinutes;
+        remainingMinutes -= chunkMinutes;
+        placed = true;
+        break;
       }
-    });
 
-    if (sessions.length > 0) {
-      dayPlan.push({
-        day: `Day ${day + 1}`,
-        sessions
-      });
+      if (!placed) {
+        const fallbackDay = dayPlan.find((day) => day.usedMinutes < capacityPerDay);
+        if (!fallbackDay) break;
+
+        const fallbackIndex = dayPlan.indexOf(fallbackDay);
+        const chunkMinutes = Math.min(Math.max(30, remainingMinutes), capacityPerDay - fallbackDay.usedMinutes);
+        fallbackDay.sessions.push(buildTaskSession({ ...task, minutes: chunkMinutes }, preferredWindowName, fallbackIndex, fallbackDay.sessions.length));
+        fallbackDay.usedMinutes += chunkMinutes;
+        remainingMinutes -= chunkMinutes;
+      }
     }
-  }
+  });
 
-  const totalPlannedMinutes = dayPlan.reduce((sum, day) => sum + day.sessions.reduce((inner, session) => inner + (session.type === 'break' ? 0 : session.minutes), 0), 0);
+  const totalPlannedMinutes = dayPlan.reduce((sum, day) => sum + day.sessions.reduce((inner, session) => inner + session.minutes, 0), 0);
+  const breakCounter = dayPlan.reduce((sum, day) => sum + Math.max(0, day.sessions.length - 1), 0);
 
   return {
     schedule: dayPlan,
@@ -216,8 +781,108 @@ function addMinutes(timeString, extraMinutes) {
 function renderTaskSummary(tasks) {
   taskList.innerHTML = tasks
     .sort((a, b) => b.priority - a.priority)
-    .map((task) => `<li><span class="task-pill" style="background:${TASK_TYPES[task.type]?.color || '#7c9cff'}"></span>${task.name} · ${task.priority}% priority</li>`)
+    .map((task) => {
+      const complete = state.completedTaskIds.has(task.id);
+      return `<li class="quest-item ${complete ? 'completed' : ''}"><button class="quest-check" data-task-id="${task.id}" aria-label="${complete ? 'Mark incomplete' : 'Complete'} ${task.name}">${complete ? '✓' : ''}</button><span class="task-pill" style="background:${TASK_TYPES[task.type]?.color || '#7c9cff'}"></span><span class="quest-copy"><strong>${task.name}</strong><small>${task.priority}% priority · +${25 + Math.round(task.duration / 15)} XP</small></span></li>`;
+    })
     .join('');
+}
+
+function getLevelFromXp(xp) {
+  let level = 1;
+  let remaining = xp;
+  while (remaining >= 100 + (level - 1) * 25) {
+    remaining -= 100 + (level - 1) * 25;
+    level += 1;
+  }
+  return { level, currentXp: remaining, requiredXp: 100 + (level - 1) * 25 };
+}
+
+function renderProgression() {
+  const progression = getLevelFromXp(state.xp);
+  const unlocked = HERO_UNLOCKS.filter((hero) => progression.level >= hero.level).at(-1);
+  levelValue.textContent = `LVL ${progression.level}`;
+  xpValue.textContent = String(state.xp);
+  nextLevelText.textContent = `${progression.requiredXp - progression.currentXp} XP to level ${progression.level + 1}`;
+  xpBar.style.width = `${Math.round((progression.currentXp / progression.requiredXp) * 100)}%`;
+
+  if (unlocked) {
+    characterCard.classList.remove('locked');
+    characterAvatar.textContent = unlocked.avatar;
+    characterName.textContent = unlocked.name;
+    characterDescription.textContent = unlocked.description;
+    unlockStatus.textContent = `Level ${unlocked.level} milestone reached. Companion unlocked!`;
+  } else {
+    const nextHero = HERO_UNLOCKS.find((hero) => hero.level > progression.level) || HERO_UNLOCKS.at(-1);
+    characterCard.classList.add('locked');
+    characterAvatar.textContent = '?';
+    characterName.textContent = 'Hero vault locked';
+    characterDescription.textContent = `${nextHero.level - progression.level} levels until ${nextHero.name}.`;
+    unlockStatus.textContent = `Reach level ${nextHero.level} to unlock your next hero.`;
+  }
+}
+
+function renderCalendar() {
+  const year = state.calendarDate.getFullYear();
+  const month = state.calendarDate.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+  const scheduledDates = new Map();
+  const selectedDateKey = getDateKey(state.selectedDate);
+
+  state.schedule.schedule.forEach((day, index) => {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() + index);
+    scheduledDates.set(date.toDateString(), day.sessions);
+  });
+
+  calendarTitle.textContent = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' }).format(state.calendarDate);
+  const withinHolidayRange = isHolidayDataYear(year);
+  document.querySelector('.calendar-data-note').textContent = withinHolidayRange
+    ? `Tamil Nadu holidays · ${HOLIDAY_YEAR_START}-${HOLIDAY_YEAR_END} · ${getHolidayDataStatus(year)}`
+    : `Holiday data available from ${HOLIDAY_YEAR_START} through ${HOLIDAY_YEAR_END}`;
+  selectedDateLabel.textContent = `Selected day: ${new Intl.DateTimeFormat('en', { weekday: 'long', month: 'short', day: 'numeric' }).format(state.selectedDate)}`;
+  const selectedTasks = state.dailyTasks[selectedDateKey] || [];
+  selectedTaskList.innerHTML = selectedTasks.length
+    ? selectedTasks.map((task) => `<div class="selected-task"><button class="remove-task-btn" data-task-id="${task.id}" aria-label="Remove ${task.title}">×</button><span>${task.time || 'Any time'}</span><strong>${task.title}</strong></div>`).join('')
+    : '<span class="no-daily-tasks">No daily tasks for this date yet.</span>';
+  calendarGrid.innerHTML = '';
+  const monthHolidays = [];
+
+  for (let cell = 0; cell < 42; cell += 1) {
+    const dayNumber = cell - firstDay + 1;
+    const inMonth = dayNumber > 0 && dayNumber <= daysInMonth;
+    const date = inMonth ? new Date(year, month, dayNumber) : null;
+    const sessions = date ? scheduledDates.get(date.toDateString()) || [] : [];
+    const dailyTasks = date ? state.dailyTasks[getDateKey(date)] || [] : [];
+    const isToday = date && date.toDateString() === today.toDateString();
+    const dateKey = date ? `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}` : '';
+    const holidayName = date && withinHolidayRange ? getTamilNaduHolidayName(date) : '';
+    const isWeekend = date && (date.getDay() === 0 || date.getDay() === 6);
+    const isSelected = date && date.toDateString() === state.selectedDate.toDateString();
+    const cellElement = document.createElement('div');
+    cellElement.className = `calendar-day ${inMonth ? '' : 'outside-month'} ${isToday ? 'today' : ''} ${isSelected ? 'selected-day' : ''} ${isWeekend ? 'weekend' : ''} ${holidayName ? 'government-leave' : ''}`;
+    cellElement.innerHTML = inMonth ? `<span class="date-number">${dayNumber}</span>${holidayName ? `<span class="leave-label">${holidayName}</span>` : ''}${sessions.length ? `<span class="calendar-event">${sessions.length} quest${sessions.length > 1 ? 's' : ''}</span>` : ''}${dailyTasks.length ? `<span class="calendar-task-event">${dailyTasks.length} task${dailyTasks.length > 1 ? 's' : ''}</span>` : ''}` : '';
+    if (holidayName) {
+      const category = getHolidayCategory(holidayName);
+      monthHolidays.push({ dayNumber, name: holidayName, category });
+      cellElement.classList.add(category);
+    }
+    if (inMonth) {
+      cellElement.addEventListener('click', () => {
+        state.selectedDate = new Date(year, month, dayNumber);
+        state.calendarDate = new Date(year, month, 1);
+        renderCalendar();
+      });
+    }
+    calendarGrid.appendChild(cellElement);
+  }
+
+  holidayList.innerHTML = monthHolidays.length
+    ? `<strong>${monthHolidays.length} leave day${monthHolidays.length > 1 ? 's' : ''} this month</strong>${monthHolidays.map((holiday) => `<span class="holiday-list-item ${holiday.category}"><b>${holiday.dayNumber}</b>${holiday.name}<small>${capitalize(holiday.category)}</small></span>`).join('')}`
+    : '<span class="no-holidays">No listed government, regional, or devotional leave this month.</span>';
 }
 
 function renderSchedule(scheduleData) {
@@ -225,22 +890,17 @@ function renderSchedule(scheduleData) {
     .map((day) => `
       <div class="day-card">
         <div class="day-header">
-          <strong>${day.day}</strong>
-          <span>${day.sessions.filter((session) => session.type !== 'break').length} focus blocks</span>
+          <strong>${day.day} · ${day.date.toLocaleDateString('en', { month: 'short', day: 'numeric' })}</strong>
+          <span>${day.sessions.length} focus blocks</span>
         </div>
         <div class="day-body">
-          ${day.sessions.map((session) => {
-            if (session.type === 'break') {
-              return `<div class="break-row">${session.time} · ${session.title}</div>`;
-            }
-            return `
-              <div class="session">
-                <div class="session-time">${session.time}</div>
-                <div class="session-title">${session.title}</div>
-                <div class="session-meta">${TASK_TYPES[session.type]?.label || 'Study'} • ${session.minutes} min</div>
-              </div>
-            `;
-          }).join('')}
+          ${day.sessions.length ? day.sessions.map((session) => `
+            <div class="session">
+              <div class="session-time">${session.time}</div>
+              <div class="session-title">${session.title}</div>
+              <div class="session-meta">${TASK_TYPES[session.type]?.label || 'Study'} • ${session.minutes} min</div>
+            </div>
+          `).join('') : '<div class="session"><div class="session-time">No study planned</div><div class="session-title">Rest or revision</div><div class="session-meta">Keep this day free</div></div>'}
         </div>
       </div>
     `)
@@ -251,7 +911,7 @@ function renderRecommendations(tasks, totalHoursPlanned, preferredWindowName) {
   const sorted = [...tasks].sort((a, b) => b.priority - a.priority);
   const items = [
     `Use ${preferredWindowName} for your most demanding tasks, especially ${sorted[0]?.name}.`,
-    `Keep at least one 10-minute break after every 50-60 minutes of work to maintain focus.`,
+    'Keep at least one short break after every 50–60 minutes of work to maintain focus.',
     `Review ${sorted[1]?.name} first to reduce deadline risk before moving to lower-priority tasks.`
   ];
 
@@ -273,24 +933,33 @@ function updateStats(tasks, scheduleData, hoursPerDay) {
 }
 
 function generateFromInput() {
-  const parsed = parseNaturalLanguage(inputText.value || sampleInput);
-  const hoursPerDay = Number(hoursPerDayInput.value || parsed.hoursPerDay || 3);
-  const chosenWindow = preferredWindow.value || parsed.preferredWindow || 'evening';
+  const rawInput = inputText.value.trim();
+  const parsed = parseNaturalLanguage(rawInput || sampleInput);
+  const hoursPerDay = normalizeHoursPerDay(hoursPerDayInput.value, parsed.hoursPerDay || 3);
+  const chosenWindow = normalizePreferredWindow(preferredWindow.value || parsed.preferredWindow || 'evening', 'evening');
 
-  const tasks = parsed.tasks;
+  const calendarTasks = getCalendarTasksForPlan();
+  const tasks = [...parsed.tasks, ...calendarTasks];
   const scheduleData = generateSchedule(tasks, hoursPerDay, chosenWindow);
 
   state.tasks = tasks;
   state.schedule = scheduleData;
 
-  inputText.value = inputText.value || sampleInput;
+  inputText.value = rawInput || sampleInput;
+  hoursPerDayInput.value = hoursPerDay;
   preferredWindow.value = chosenWindow;
   windowLabel.textContent = `${capitalize(chosenWindow)} sessions`;
 
   renderTaskSummary(tasks);
   renderSchedule(scheduleData);
+  renderProgression();
+  renderCalendar();
   renderRecommendations(tasks, scheduleData.totalHours, chosenWindow);
   updateStats(tasks, scheduleData, hoursPerDay);
+  statusBadge.textContent = calendarTasks.length ? `AI plan (${calendarTasks.length} calendar tasks)` : `Plan (${hoursPerDay}h/day)`;
+  plannerContextNote.textContent = calendarTasks.length
+    ? `${translate('calendarTasksIncluded', 'AI included')} ${calendarTasks.length} ${translate('savedCalendarTasks', 'saved calendar task(s)')} ${translate('prioritizedByDeadline', 'and prioritized them by deadline.')}`
+    : translate('plannerContext', 'Describe your deadlines and study availability. Saved calendar tasks are included automatically.');
 }
 
 function capitalize(value) {
@@ -298,23 +967,24 @@ function capitalize(value) {
 }
 
 function adaptiveReschedule() {
-  if (!state.tasks.length) {
-    generateFromInput();
-    return;
-  }
+  const baseTasks = state.tasks.length ? state.tasks : parseNaturalLanguage(inputText.value || sampleInput).tasks;
 
-  const tasks = state.tasks.map((task) => ({
+  const tasks = baseTasks.map((task) => ({
     ...task,
     priority: Math.min(100, task.priority + (task.type === 'exam' ? 8 : 5)),
     dueInDays: Math.max(1, task.dueInDays - 1)
   }));
 
-  const hours = Number(hoursPerDayInput.value || 3);
-  const chosenWindow = preferredWindow.value || 'evening';
+  const hours = normalizeHoursPerDay(hoursPerDayInput.value, 3);
+  const chosenWindow = normalizePreferredWindow(preferredWindow.value, 'evening');
   const scheduleData = generateSchedule(tasks, hours, chosenWindow);
 
   state.tasks = tasks;
   state.schedule = scheduleData;
+
+  hoursPerDayInput.value = hours;
+  preferredWindow.value = chosenWindow;
+  windowLabel.textContent = `${capitalize(chosenWindow)} sessions`;
 
   renderTaskSummary(tasks);
   renderSchedule(scheduleData);
@@ -330,8 +1000,139 @@ sampleBtn.addEventListener('click', () => {
   generateFromInput();
 });
 
-generateBtn.addEventListener('click', generateFromInput);
-rescheduleBtn.addEventListener('click', adaptiveReschedule);
+generateBtn.addEventListener('click', () => {
+  generateFromInput();
+  statusBadge.textContent = 'Generated';
+});
+rescheduleBtn.addEventListener('click', () => {
+  adaptiveReschedule();
+  statusBadge.textContent = 'Rescheduled';
+});
 
+pasteLoginBtn.addEventListener('click', pasteLoginDetails);
+applyPasteBtn.addEventListener('click', () => applyClipboardText(clipboardInput.value));
+
+taskList.addEventListener('click', (event) => {
+  const button = event.target.closest('.quest-check');
+  if (!button) return;
+  const task = state.tasks.find((item) => item.id === button.dataset.taskId);
+  if (!task) return;
+
+  if (state.completedTaskIds.has(task.id)) {
+    state.completedTaskIds.delete(task.id);
+    state.xp = Math.max(0, state.xp - (25 + Math.round(task.duration / 15)));
+  } else {
+    state.completedTaskIds.add(task.id);
+    state.xp += 25 + Math.round(task.duration / 15);
+  }
+  saveProgress();
+  renderTaskSummary(state.tasks);
+  renderProgression();
+});
+
+previousMonthBtn.addEventListener('click', () => {
+  state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() - 1, 1);
+  renderCalendar();
+});
+nextMonthBtn.addEventListener('click', () => {
+  state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() + 1, 1);
+  renderCalendar();
+});
+todayBtn.addEventListener('click', () => {
+  state.selectedDate = new Date();
+  state.calendarDate = new Date(state.selectedDate.getFullYear(), state.selectedDate.getMonth(), 1);
+  renderCalendar();
+});
+
+languageSelect.addEventListener('change', () => applyLanguage(languageSelect.value));
+voiceInputBtn.addEventListener('click', toggleVoiceInput);
+
+addDailyTaskBtn.addEventListener('click', () => {
+  const title = dailyTaskInput.value.trim();
+  if (!title) {
+    dailyTaskInput.focus();
+    return;
+  }
+
+  const dateKey = getDateKey(state.selectedDate);
+  state.dailyTasks[dateKey] = state.dailyTasks[dateKey] || [];
+  state.dailyTasks[dateKey].push({
+    id: `daily-${Date.now()}`,
+    title,
+    time: dailyTaskTime.value
+  });
+  saveDailyTasks();
+  dailyTaskInput.value = '';
+  dailyTaskTime.value = '';
+  renderCalendar();
+});
+
+optimizeCalendarBtn.addEventListener('click', () => {
+  if (!Object.keys(state.dailyTasks).length) {
+    statusBadge.textContent = 'Add a calendar task first';
+    dailyTaskInput.focus();
+    return;
+  }
+  generateFromInput();
+  statusBadge.textContent = 'AI timetable optimized';
+  document.getElementById('timetableSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+selectedTaskList.addEventListener('click', (event) => {
+  const button = event.target.closest('.remove-task-btn');
+  if (!button) return;
+  const dateKey = getDateKey(state.selectedDate);
+  state.dailyTasks[dateKey] = (state.dailyTasks[dateKey] || []).filter((task) => task.id !== button.dataset.taskId);
+  saveDailyTasks();
+  renderCalendar();
+});
+previousDayBtn.addEventListener('click', () => {
+  state.selectedDate = new Date(state.selectedDate);
+  state.selectedDate.setDate(state.selectedDate.getDate() - 1);
+  state.calendarDate = new Date(state.selectedDate.getFullYear(), state.selectedDate.getMonth(), 1);
+  renderCalendar();
+});
+nextDayBtn.addEventListener('click', () => {
+  state.selectedDate = new Date(state.selectedDate);
+  state.selectedDate.setDate(state.selectedDate.getDate() + 1);
+  state.calendarDate = new Date(state.selectedDate.getFullYear(), state.selectedDate.getMonth(), 1);
+  renderCalendar();
+});
+
+loginForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const email = studentEmail.value.trim();
+  const password = passwordInput.value.trim();
+
+  if (!email || !password) {
+    loginWarning.textContent = 'Please enter your student email and password to continue.';
+    return;
+  }
+
+  try {
+    const existingUser = await getUserRecord(email);
+
+    if (!existingUser) {
+      await saveUserRecord(email, password);
+      loginWarning.textContent = 'Welcome aboard! Your account has been saved.';
+    } else if (existingUser.password !== password) {
+      loginWarning.textContent = 'This password does not match the saved account. Please try again.';
+      return;
+    } else {
+      loginWarning.textContent = 'Welcome back. Opening your magical timetable...';
+    }
+
+    startAmbientMusic();
+    loginScreen.classList.add('hidden');
+    appShell.classList.add('visible');
+  } catch (error) {
+    console.error('Login database error:', error);
+    loginWarning.textContent = 'Database error. Please try again.';
+  }
+});
+
+applyLanguage(localStorage.getItem('NKSchedulerLanguage') || 'en');
+setupVoiceInput();
 inputText.value = sampleInput;
 generateFromInput();

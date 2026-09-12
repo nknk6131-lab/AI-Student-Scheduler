@@ -3,68 +3,171 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Student Scheduler</title>
+    <title>NK Scheduler</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="page-shell">
+    <div class="login-screen" id="loginScreen">
+      <div class="sky-glow"></div>
+      <div class="stars"></div>
+      <div class="eagle-flight">
+        <div class="eagle"></div>
+        <div class="eagle-shadow"></div>
+      </div>
+      <div class="magic-orb orb-one"></div>
+      <div class="magic-orb orb-two"></div>
+      <div class="rune rune-one"></div>
+      <div class="rune rune-two"></div>
+      <div class="rune rune-three"></div>
+
+      <div class="train-scene" aria-hidden="true">
+        <div class="fog fog-left"></div>
+        <div class="fog fog-right"></div>
+        <div class="train-track"></div>
+        <div class="train-shadow"></div>
+        <div class="sparkles"></div>
+
+        <div class="train">
+          <div class="engine">
+            <span class="lamp"></span>
+            <span class="engine-window window-one"></span>
+            <span class="engine-window window-two"></span>
+          </div>
+          <div class="carriage carriage-a">
+            <span class="window-row"></span>
+            <span class="window-row"></span>
+          </div>
+          <div class="carriage carriage-b">
+            <span class="window-row"></span>
+            <span class="window-row"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-panel">
+        <p class="login-tag" data-i18n="welcome">Welcome to the Academy</p>
+        <h1 data-i18n="loginTitle">Enter the Magical Study Gate</h1>
+
+        <form id="loginForm">
+          <label class="login-field">
+            <span data-i18n="studentEmail">Student Email</span>
+            <input type="email" id="studentEmail" placeholder="harry@hogwarts.ac" required />
+          </label>
+
+          <label class="login-field">
+            <span data-i18n="magicPassword">Magic Password</span>
+            <input type="password" id="password" placeholder="Enter your password" required />
+          </label>
+
+          <button type="button" class="paste-login-btn" id="pasteLoginBtn" data-i18n="pasteLogin">▣ Paste login details</button>
+          <div class="clipboard-fallback" id="clipboardFallback" hidden>
+            <label for="clipboardInput">Paste copied email and password here</label>
+            <textarea id="clipboardInput" rows="2" placeholder="email@example.com&#10;password"></textarea>
+            <button type="button" class="apply-paste-btn" id="applyPasteBtn">Use pasted details</button>
+          </div>
+          <button type="submit" class="login-btn" data-i18n="enterTimetable">Enter the timetable</button>
+          <p id="loginWarning" class="login-warning">Use any valid email and password to continue.</p>
+        </form>
+      </div>
+    </div>
+
+    <div class="page-shell" id="appShell">
       <aside class="sidebar">
         <div class="brand-wrap">
           <div class="brand-icon">AI</div>
           <div>
             <p class="eyebrow">Academic Copilot</p>
-            <h1>Student Scheduler</h1>
+            <h1>NK Scheduler</h1>
           </div>
         </div>
 
-        <div class="panel">
-          <h2>AI Planner</h2>
-          <textarea id="inputText" placeholder="Example: I have a DSA exam in five days, a DBMS assignment due in two days, and I can study three hours every evening."></textarea>
+        <div class="panel dashboard-section" id="plannerSection">
+          <div class="language-field">
+            <label for="languageSelect" data-i18n="language">Language</label>
+            <select id="languageSelect" aria-label="Language">
+              <option value="en">English</option>
+              <option value="ta">தமிழ்</option>
+              <option value="ml">മലയാളം</option>
+              <option value="te">తెలుగు</option>
+              <option value="kn">ಕನ್ನಡ</option>
+              <option value="hi">हिन्दी</option>
+              <option value="ja">日本語</option>
+              <option value="fr">Français</option>
+              <option value="zh">中文</option>
+            </select>
+          </div>
+          <h2 data-i18n="aiPlanner">AI Planner</h2>
+          <p class="planner-context-note" id="plannerContextNote" data-i18n="plannerContext">Describe your deadlines and study availability. Saved calendar tasks are included automatically.</p>
+          <textarea id="inputText" data-placeholder-i18n="plannerPlaceholder" placeholder="Example: I have a DSA exam in five days, a DBMS assignment due in two days, and I can study three hours every evening."></textarea>
+          <div class="voice-row">
+            <button type="button" id="voiceInputBtn" class="voice-input-btn" data-i18n="voiceStart">● Start voice input</button>
+            <span id="voiceStatus" data-i18n="voiceReady">Voice input ready</span>
+          </div>
 
           <div class="field-row">
             <label>
-              Study hours/day
+              <span data-i18n="studyHours">Study hours/day</span>
               <input id="hoursPerDay" type="number" min="1" max="12" value="3" />
             </label>
             <label>
-              Preferred time
+              <span data-i18n="preferredTime">Preferred time</span>
               <select id="preferredWindow">
-                <option value="morning">Morning</option>
-                <option value="afternoon">Afternoon</option>
-                <option value="evening" selected>Evening</option>
-                <option value="night">Night</option>
+                <option value="morning" data-i18n="morning">Morning</option>
+                <option value="afternoon" data-i18n="afternoon">Afternoon</option>
+                <option value="evening" selected data-i18n="evening">Evening</option>
+                <option value="night" data-i18n="night">Night</option>
               </select>
             </label>
           </div>
 
           <div class="button-row">
-            <button id="generateBtn" class="primary-btn">Generate schedule</button>
-            <button id="sampleBtn" class="ghost-btn">Use sample</button>
+            <button id="generateBtn" class="primary-btn" data-i18n="generateSchedule">Generate schedule</button>
+            <button id="sampleBtn" class="ghost-btn" data-i18n="useSample">Use sample</button>
           </div>
-          <button id="rescheduleBtn" class="secondary-btn">Adaptive reschedule</button>
+          <button id="rescheduleBtn" class="secondary-btn" data-i18n="adaptiveReschedule">Adaptive reschedule</button>
         </div>
 
-        <div class="panel stats-panel">
-          <h2>Study snapshot</h2>
+        <div class="panel stats-panel dashboard-section" id="snapshotSection">
+          <h2 data-i18n="studySnapshot">Study snapshot</h2>
           <div class="stat-grid">
             <div>
-              <span class="stat-label">Urgent tasks</span>
+              <span class="stat-label" data-i18n="urgentTasks">Urgent tasks</span>
               <strong id="urgentCount">0</strong>
             </div>
             <div>
-              <span class="stat-label">Total hours</span>
+              <span class="stat-label" data-i18n="totalHours">Total hours</span>
               <strong id="totalHours">0h</strong>
             </div>
             <div>
-              <span class="stat-label">Focus score</span>
+              <span class="stat-label" data-i18n="focusScore">Focus score</span>
               <strong id="focusScore">0%</strong>
             </div>
             <div>
-              <span class="stat-label">Breaks</span>
+              <span class="stat-label" data-i18n="breaks">Breaks</span>
               <strong id="breakCount">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel progression-panel dashboard-section" id="progressionSection">
+          <div class="panel-heading-row">
+            <h2 data-i18n="academyProgression">Academy progression</h2>
+            <span class="level-chip" id="levelValue">LVL 1</span>
+          </div>
+          <div class="xp-row">
+            <span><strong id="xpValue">0</strong> XP</span>
+            <span id="nextLevelText">100 XP to level 2</span>
+          </div>
+          <div class="xp-track"><span id="xpBar"></span></div>
+          <p class="unlock-status" id="unlockStatus">Reach level 10 to unlock your first hero.</p>
+          <div class="character-card locked" id="characterCard">
+            <div class="character-avatar" id="characterAvatar">?</div>
+            <div>
+              <strong id="characterName">Hero vault locked</strong>
+              <span id="characterDescription">Complete quests to reveal a new companion.</span>
             </div>
           </div>
         </div>
@@ -73,31 +176,79 @@
       <main class="main-panel">
         <header class="topbar">
           <div>
-            <p class="eyebrow">AI-generated plan</p>
-            <h2 id="planTitle">Your optimized timetable</h2>
+            <p class="eyebrow" data-i18n="aiGeneratedPlan">AI-generated plan</p>
+            <h2 id="planTitle" data-i18n="optimizedTimetable">Your optimized timetable</h2>
           </div>
           <div class="badge" id="statusBadge">Ready</div>
         </header>
 
-        <section class="hero-card">
+        <nav class="dashboard-nav" aria-label="Dashboard sections">
+          <a href="#plannerSection" data-i18n="planner">Planner</a>
+          <a href="#questSection" data-i18n="quests">Quests</a>
+          <a href="#calendarSection" data-i18n="calendar">Calendar</a>
+          <a href="#timetableSection" data-i18n="timetable">Timetable</a>
+          <a href="#recommendationsSection" data-i18n="insights">Insights</a>
+        </nav>
+
+        <section class="hero-card dashboard-section" id="questSection">
           <div>
-            <p class="eyebrow">Task analysis</p>
-            <h3 id="summaryTitle">Priority overview</h3>
+            <p class="eyebrow" data-i18n="taskAnalysis">Task analysis</p>
+            <h3 id="summaryTitle" data-i18n="priorityOverview">Priority overview</h3>
+            <p class="section-note">Complete a quest to earn XP and build your streak.</p>
           </div>
           <ul id="taskList" class="task-list"></ul>
         </section>
 
-        <section class="schedule-section">
+        <section class="calendar-section dashboard-section" id="calendarSection">
           <div class="section-header">
-            <h3>Weekly timetable</h3>
+            <div>
+              <p class="eyebrow" data-i18n="missionCalendar">Mission calendar</p>
+              <h3 id="calendarTitle">This month</h3>
+              <p class="calendar-data-note">Tamil Nadu government holidays · fixed dates and verified festival entries</p>
+            </div>
+            <div class="calendar-controls">
+              <button id="previousDayBtn" class="day-nav-btn">Yesterday</button>
+              <button id="todayBtn" class="today-btn" data-i18n="today">Today</button>
+              <button id="nextDayBtn" class="day-nav-btn" data-i18n="tomorrow">Tomorrow</button>
+            </div>
+          </div>
+          <p class="selected-date-label" id="selectedDateLabel">Selected day: Today</p>
+          <div class="daily-task-composer">
+            <input id="dailyTaskInput" type="text" data-placeholder-i18n="dailyTaskPlaceholder" placeholder="Add a task for the selected day" aria-label="Daily task" />
+            <input id="dailyTaskTime" type="time" aria-label="Task time" />
+            <button id="addDailyTaskBtn" class="add-task-btn" data-i18n="addTask">＋ Add task</button>
+          </div>
+          <div class="selected-task-list" id="selectedTaskList" aria-live="polite"></div>
+          <button id="optimizeCalendarBtn" class="optimize-calendar-btn" data-i18n="optimizeFromCalendar">✦ Optimize timetable from calendar</button>
+          <div class="month-controls">
+            <button id="previousMonthBtn" class="icon-btn" aria-label="Previous month">← Month</button>
+            <button id="nextMonthBtn" class="icon-btn" aria-label="Next month">Month →</button>
+          </div>
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span data-i18n="sun">Sun</span><span data-i18n="mon">Mon</span><span data-i18n="tue">Tue</span><span data-i18n="wed">Wed</span><span data-i18n="thu">Thu</span><span data-i18n="fri">Fri</span><span data-i18n="sat">Sat</span>
+          </div>
+          <div class="calendar-legend" aria-label="Calendar legend">
+            <span><i class="legend-swatch government"></i>Government / national</span>
+            <span><i class="legend-swatch regional"></i>Regional / Tamil</span>
+            <span><i class="legend-swatch devotional"></i>Devotional</span>
+            <span><i class="legend-swatch weekend"></i>Weekend</span>
+            <span><i class="legend-swatch quest"></i>Study quest</span>
+          </div>
+          <div class="holiday-list" id="holidayList" aria-live="polite"></div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+        </section>
+
+        <section class="schedule-section dashboard-section" id="timetableSection">
+          <div class="section-header">
+            <h3 data-i18n="weeklyTimetable">Weekly timetable</h3>
             <span id="windowLabel">Evening sessions</span>
           </div>
           <div id="scheduleGrid" class="schedule-grid"></div>
         </section>
 
-        <section class="recommendations">
+        <section class="recommendations dashboard-section" id="recommendationsSection">
           <div class="section-header">
-            <h3>Recommendations</h3>
+            <h3 data-i18n="recommendations">Recommendations</h3>
           </div>
           <ul id="recommendationList" class="recommendation-list"></ul>
         </section>
