@@ -2,6 +2,10 @@
 
 const HOURS_TO_MINUTES = 60;
 const VALID_WINDOWS = ['morning', 'afternoon', 'evening', 'night'];
+const NUMBER_WORDS = {
+  one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7,
+  eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12
+};
 const TASK_TYPES = {
   exam: { label: 'Exam', color: '#fb7185' },
   assignment: { label: 'Assignment', color: '#fbbf24' },
@@ -47,7 +51,10 @@ const applyPasteBtn = document.getElementById('applyPasteBtn');
 const loginScreen = document.getElementById('loginScreen');
 const appShell = document.getElementById('appShell');
 const studentEmail = document.getElementById('studentEmail');
+const studentName = document.getElementById('studentName');
+const studentNameField = document.getElementById('studentNameField');
 const passwordInput = document.getElementById('password');
+const accountToggleBtn = document.getElementById('accountToggleBtn');
 const languageSelect = document.getElementById('languageSelect');
 const levelValue = document.getElementById('levelValue');
 const xpValue = document.getElementById('xpValue');
@@ -58,6 +65,9 @@ const characterCard = document.getElementById('characterCard');
 const characterAvatar = document.getElementById('characterAvatar');
 const characterName = document.getElementById('characterName');
 const characterDescription = document.getElementById('characterDescription');
+const sessionCount = document.getElementById('sessionCount');
+const streakValue = document.getElementById('streakValue');
+const levelRoadmap = document.getElementById('levelRoadmap');
 const calendarTitle = document.getElementById('calendarTitle');
 const calendarGrid = document.getElementById('calendarGrid');
 const holidayList = document.getElementById('holidayList');
@@ -75,11 +85,17 @@ const optimizeCalendarBtn = document.getElementById('optimizeCalendarBtn');
 const plannerContextNote = document.getElementById('plannerContextNote');
 const voiceInputBtn = document.getElementById('voiceInputBtn');
 const voiceStatus = document.getElementById('voiceStatus');
+const notificationBtn = document.getElementById('notificationBtn');
+const notificationStatus = document.getElementById('notificationStatus');
 
 const state = {
   schedule: [],
   tasks: [],
   xp: 0,
+  completedSessions: 0,
+  streak: 0,
+  lastCompletedDate: '',
+  awardedStreakRewards: [],
   completedTaskIds: new Set(),
   calendarDate: new Date(),
   selectedDate: new Date(),
@@ -87,9 +103,29 @@ const state = {
 };
 
 const HERO_UNLOCKS = [
-  { level: 10, name: 'Naruto', avatar: 'N', description: 'The determined shinobi joins your study squad.' },
-  { level: 20, name: 'Sailor Moon', avatar: 'S', description: 'A guardian of focus and late-night revision.' },
-  { level: 30, name: 'Luffy', avatar: 'L', description: 'Your fearless captain for ambitious projects.' }
+  { level: 1, rank: 'Beginner', name: 'Tanjiro Kamado', avatar: 'T', reward: 'Start your study journey' },
+  { level: 5, rank: 'Rookie', name: 'Deku', avatar: 'D', reward: 'Complete 5 study sessions' },
+  { level: 10, rank: 'Skilled', name: 'Itadori Yuji', avatar: 'I', reward: '10 successful sessions' },
+  { level: 15, rank: 'Advanced', name: 'Killua Zoldyck', avatar: 'K', reward: '15 sessions + 80% completion' },
+  { level: 20, rank: 'Elite', name: 'Levi Ackerman', avatar: 'L', reward: '20 sessions + 85% completion' },
+  { level: 30, rank: 'Expert', name: 'Gojo Satoru', avatar: 'G', reward: '30 sessions + 90% completion' },
+  { level: 40, rank: 'Master', name: 'Eren Yeager', avatar: 'E', reward: '40 sessions + 7-day streak' },
+  { level: 50, rank: 'Legendary', name: 'Goku', avatar: 'G', reward: '50 sessions + 14-day streak' },
+  { level: 75, rank: 'Mythic', name: 'Saitama', avatar: 'S', reward: '75 sessions + 90% productivity' },
+  { level: 100, rank: 'Ultimate', name: 'Naruto Uzumaki', avatar: 'N', reward: '100 sessions + 30-day streak' }
+];
+
+const LEVEL_THRESHOLDS = [
+  0, 150, 350, 600, 900, 1250, 1650, 2100, 2600, 3150,
+  3750, 4400, 5100, 5850, 6650, 7500, 8000, 8500, 9250, 10000,
+  10800, 11650, 12550, 13500, 14500, 15550, 16700, 17900, 19150, 20500,
+  22000, 23550, 25200, 26900, 28700, 30600, 32600, 34700, 36900, 39200,
+  41600, 44050, 46600, 49200, 51850, 54600, 57450, 60300, 63250, 66250,
+  69500, 72750, 76000, 79250, 82500, 85750, 89000, 92250, 95500, 98750,
+  102000, 105250, 108500, 111750, 115000, 118250, 121500, 124750, 128000, 131250,
+  134500, 137750, 141000, 144250, 147500, 150750, 154000, 157250, 160500, 163750,
+  167000, 170250, 173500, 176750, 180000, 183250, 186500, 189750, 193000, 196250,
+  199500, 202750, 206000, 209250, 212500, 215750, 219000, 222250, 225500, 228750
 ];
 
 const CALENDAR_YEAR = new Date().getFullYear();
@@ -178,11 +214,26 @@ function getHolidayCategory(name) {
   return 'devotional';
 }
 
+function getGoodFridayMonthDay(year) {
+  const goldenNumber = year % 19;
+  const century = Math.floor(year / 100);
+  const solarCorrection = century - Math.floor(century / 4) - Math.floor((8 * century + 13) / 25) + 19 * goldenNumber + 15;
+  const moonPhase = solarCorrection % 30;
+  const weekdayCorrection = (Math.floor(year / 4) + year + Math.floor(year / 100) - Math.floor(year / 400) - moonPhase + 31) % 7;
+  const easterMonth = Math.floor((moonPhase + weekdayCorrection + 90) / 25);
+  const easterDay = (moonPhase + weekdayCorrection + easterMonth + 19) % 32;
+  const goodFriday = new Date(year, easterMonth - 1, easterDay - 2);
+  return `${String(goodFriday.getMonth() + 1).padStart(2, '0')}-${String(goodFriday.getDate()).padStart(2, '0')}`;
+}
+
 function buildTamilNaduHolidayFeed() {
   const feed = {};
 
   for (let year = HOLIDAY_YEAR_START; year <= HOLIDAY_YEAR_END; year += 1) {
-    feed[year] = { ...TAMIL_NADU_RECURRING_HOLIDAYS };
+    feed[year] = {
+      ...TAMIL_NADU_RECURRING_HOLIDAYS,
+      [getGoodFridayMonthDay(year)]: 'Good Friday'
+    };
 
     Object.entries(TAMIL_NADU_HOLIDAY_OVERRIDES[year] || {}).forEach(([monthDay, name]) => {
       feed[year][monthDay] = name;
@@ -202,11 +253,19 @@ const TAMIL_NADU_HOLIDAY_FEED = buildTamilNaduHolidayFeed();
 
 const savedProgress = JSON.parse(localStorage.getItem('AIStudentSchedulerProgress') || '{}');
 state.xp = Number(savedProgress.xp) || 0;
+state.completedSessions = Number(savedProgress.completedSessions) || 0;
+state.streak = Number(savedProgress.streak) || 0;
+state.lastCompletedDate = savedProgress.lastCompletedDate || '';
+state.awardedStreakRewards = Array.isArray(savedProgress.awardedStreakRewards) ? savedProgress.awardedStreakRewards : [];
 state.completedTaskIds = new Set(Array.isArray(savedProgress.completedTaskIds) ? savedProgress.completedTaskIds : []);
 
 function saveProgress() {
   localStorage.setItem('AIStudentSchedulerProgress', JSON.stringify({
     xp: state.xp,
+    completedSessions: state.completedSessions,
+    streak: state.streak,
+    lastCompletedDate: state.lastCompletedDate,
+    awardedStreakRewards: state.awardedStreakRewards,
     completedTaskIds: [...state.completedTaskIds]
   }));
 }
@@ -217,6 +276,89 @@ function getDateKey(date) {
 
 function saveDailyTasks() {
   localStorage.setItem('AIStudentSchedulerDailyTasks', JSON.stringify(state.dailyTasks));
+}
+
+function saveNotifiedTaskKeys() {
+  localStorage.setItem('AIStudentSchedulerNotifiedTasks', JSON.stringify([...notifiedTaskKeys]));
+}
+
+function getPreferredReminderTime() {
+  const times = getTimeLabel(normalizePreferredWindow(preferredWindow.value, 'evening'));
+  const [time, meridian] = times[0].split(' ');
+  const [hourText, minuteText] = time.split(':');
+  let hour = Number(hourText);
+  if (meridian === 'PM' && hour !== 12) hour += 12;
+  if (meridian === 'AM' && hour === 12) hour = 0;
+  return { hour, minute: Number(minuteText) };
+}
+
+function getTaskReminderDate(task) {
+  if (task.calendarDate) {
+    const reminderDate = new Date(`${task.calendarDate}T${task.calendarTime || '09:00'}:00`);
+    return Number.isNaN(reminderDate.getTime()) ? null : reminderDate;
+  }
+
+  const reminderDate = new Date();
+  reminderDate.setHours(0, 0, 0, 0);
+  reminderDate.setDate(reminderDate.getDate() + Math.max(0, task.dueInDays - 1));
+  const preferredTime = getPreferredReminderTime();
+  reminderDate.setHours(preferredTime.hour, preferredTime.minute, 0, 0);
+  return reminderDate;
+}
+
+function getNotificationTasks() {
+  const generatedTasks = state.tasks.map((task) => ({ ...task, source: 'AI plan' }));
+  const calendarTasks = getCalendarTasksForPlan().map((task) => ({ ...task, source: 'Calendar' }));
+  return [...generatedTasks, ...calendarTasks];
+}
+
+function updateNotificationStatus(message) {
+  notificationStatus.textContent = message;
+}
+
+function checkTaskNotifications() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+  const now = new Date();
+  getNotificationTasks().forEach((task) => {
+    const reminderDate = getTaskReminderDate(task);
+    if (!reminderDate || reminderDate > now) return;
+
+    const notificationKey = `${task.id}-${reminderDate.toISOString().slice(0, 16)}`;
+    if (notifiedTaskKeys.has(notificationKey)) return;
+
+    new Notification(`Study reminder: ${task.name}`, {
+      body: `${task.source} task · ${task.duration || 45} minutes planned · Priority ${task.priority}%`,
+      tag: notificationKey
+    });
+    notifiedTaskKeys.add(notificationKey);
+  });
+  saveNotifiedTaskKeys();
+}
+
+function startTaskNotifications() {
+  if (!('Notification' in window)) {
+    updateNotificationStatus('This browser does not support notifications');
+    return;
+  }
+
+  if (Notification.permission === 'denied') {
+    updateNotificationStatus('Notifications are blocked in browser settings');
+    return;
+  }
+
+  Notification.requestPermission().then((permission) => {
+    if (permission !== 'granted') {
+      updateNotificationStatus('Notifications remain off');
+      return;
+    }
+
+    notificationBtn.textContent = 'Notifications enabled';
+    notificationBtn.disabled = true;
+    updateNotificationStatus('Every task will notify you when it is due');
+    checkTaskNotifications();
+    if (!notificationTimer) notificationTimer = window.setInterval(checkTaskNotifications, 30000);
+  });
 }
 
 function getCalendarTasksForPlan() {
@@ -250,6 +392,9 @@ let activeLanguage = 'en';
 let speechRecognition = null;
 let voiceBaseText = '';
 let voiceRetryCount = 0;
+let notificationTimer = null;
+let accountMode = 'login';
+const notifiedTaskKeys = new Set(JSON.parse(localStorage.getItem('AIStudentSchedulerNotifiedTasks') || '[]'));
 
 const SPEECH_LANGUAGES = {
   en: 'en-US', ta: 'ta-IN', ml: 'ml-IN', te: 'te-IN', kn: 'kn-IN',
@@ -429,7 +574,7 @@ function openUserDatabase() {
   });
 }
 
-function saveUserRecord(email, password) {
+function saveUserRecord(email, password, name = '') {
   return new Promise(async (resolve, reject) => {
     try {
       const db = await openUserDatabase();
@@ -438,6 +583,7 @@ function saveUserRecord(email, password) {
       const userRecord = {
         email: normalizeEmail(email),
         password: String(password || '').trim(),
+        name: String(name || '').trim(),
         createdAt: new Date().toISOString()
       };
 
@@ -564,8 +710,8 @@ function parseNaturalLanguage(input) {
   clauses.forEach((clause) => {
     const cleanedClause = clause.replace(/\s+/g, ' ').trim();
     if (!cleanedClause || cleanedClause.length < 3) return;
-    if (/\b(?:study|studying|can study|will study)\s+\d+(?:\.\d+)?\s+hours?/i.test(cleanedClause)
-      || /\d+(?:\.\d+)?\s+hours?\s+(?:every|per)\b/i.test(cleanedClause)) return;
+    if (/\b(?:study|studying|can study|will study)\s+(?:\d+(?:\.\d+)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+hours?/i.test(cleanedClause)
+      || /(?:\d+(?:\.\d+)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+hours?\s+(?:every|per)\b/i.test(cleanedClause)) return;
 
     const dueInDays = extractDueInDays(cleanedClause) || 3;
     const type = detectTaskType(cleanedClause);
@@ -590,10 +736,12 @@ function parseNaturalLanguage(input) {
 }
 
 function extractDueInDays(text) {
-  const match = text.match(/(?:in|within|after|for)\s+(\d+)\s+(?:day|days)/i)
-    || text.match(/(\d+)\s+(?:day|days)\s*(?:from now|left)?/i);
+  const amountPattern = '(\\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)';
+  const match = text.match(new RegExp(`(?:in|within|after|for)\\s+${amountPattern}\\s+(?:day|days)`, 'i'))
+    || text.match(new RegExp(`${amountPattern}\\s+(?:day|days)\\s*(?:from now|left)?`, 'i'));
 
-  return match ? Number(match[1]) : null;
+  if (!match) return null;
+  return NUMBER_WORDS[match[1].toLowerCase()] || Number(match[1]);
 }
 
 function detectTaskType(text) {
@@ -606,6 +754,7 @@ function detectTaskType(text) {
 }
 
 function buildTaskName(text, type) {
+  const numberWordPattern = 'one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve';
   const withoutNoise = text
     .replace(/^(i have|i need|i am|there is|there are|i can|i will|and)\s+/i, '')
     .replace(/\b(?:study|studying|can study|have)\b/gi, '')
@@ -618,7 +767,7 @@ function buildTaskName(text, type) {
   }
 
   return withoutNoise
-    .replace(/\s+(?:in|within|after|for)\s+\d+\s+(?:day|days)\b.*$/i, '')
+    .replace(new RegExp(`\\s+(?:in|within|after|for)\\s+(?:\\d+|${numberWordPattern})\\s+(?:day|days)\\b.*$`, 'i'), '')
     .replace(/\s+(?:is|are|due)\b.*$/i, '')
     .trim();
 }
@@ -679,6 +828,18 @@ function formatInputTime(timeValue) {
   return `${friendlyHour}:${minuteText} ${meridian}`;
 }
 
+function getPriorityBand(task) {
+  if (task.priority >= 85 || task.dueInDays <= 2) return { label: 'Critical', className: 'critical' };
+  if (task.priority >= 70 || task.dueInDays <= 4) return { label: 'High', className: 'high' };
+  return { label: 'Planned', className: 'planned' };
+}
+
+function getPriorityReason(task) {
+  const deadline = task.dueInDays <= 1 ? 'due today' : `due in ${task.dueInDays} days`;
+  const typeLabel = TASK_TYPES[task.type]?.label || 'Study';
+  return `${typeLabel} weight + deadline pressure (${deadline})`;
+}
+
 function buildTaskSession(task, preferredWindowName, dayIndex, slotIndex) {
   const slotOptions = getTimeLabel(preferredWindowName);
   const startTime = task.calendarTime ? formatInputTime(task.calendarTime) : slotOptions[slotIndex % slotOptions.length];
@@ -686,6 +847,7 @@ function buildTaskSession(task, preferredWindowName, dayIndex, slotIndex) {
 
   return {
     id: `${task.id}-${dayIndex}-${slotIndex}`,
+    taskId: task.id,
     time: `${startTime} - ${endTime}`,
     title: task.name,
     type: task.type,
@@ -778,24 +940,54 @@ function addMinutes(timeString, extraMinutes) {
   return `${friendlyHour}:${String(finalMinute).padStart(2, '0')} ${finalMeridian}`;
 }
 
-function renderTaskSummary(tasks) {
-  taskList.innerHTML = tasks
-    .sort((a, b) => b.priority - a.priority)
-    .map((task) => {
-      const complete = state.completedTaskIds.has(task.id);
-      return `<li class="quest-item ${complete ? 'completed' : ''}"><button class="quest-check" data-task-id="${task.id}" aria-label="${complete ? 'Mark incomplete' : 'Complete'} ${task.name}">${complete ? '✓' : ''}</button><span class="task-pill" style="background:${TASK_TYPES[task.type]?.color || '#7c9cff'}"></span><span class="quest-copy"><strong>${task.name}</strong><small>${task.priority}% priority · +${25 + Math.round(task.duration / 15)} XP</small></span></li>`;
-    })
-    .join('');
+function getHourFromTimeLabel(timeLabel) {
+  const match = String(timeLabel || '').match(/(\d+):\d+\s*(AM|PM)/i);
+  if (!match) return null;
+  let hour = Number(match[1]) % 12;
+  if (match[2].toUpperCase() === 'PM') hour += 12;
+  return hour;
+}
+
+function renderTaskSummary(tasks, scheduleData = state.schedule) {
+  const taskMap = new Map(tasks.map((task) => [task.id, task]));
+  taskList.innerHTML = (scheduleData?.schedule || []).map((day) => {
+    const sessionsByHour = new Map();
+    day.sessions.forEach((session) => {
+      const hour = getHourFromTimeLabel(session.time);
+      if (hour !== null) sessionsByHour.set(hour, session);
+    });
+
+    const hours = Array.from({ length: 24 }, (_, hour) => {
+      const session = sessionsByHour.get(hour);
+      const task = session ? taskMap.get(session.taskId) : null;
+      const complete = task && state.completedTaskIds.has(task.id);
+      const label = `${String(hour).padStart(2, '0')}:00`;
+      return `<div class="hour-row ${session ? 'scheduled' : 'free'} ${complete ? 'completed' : ''}">
+        <time>${label}</time>
+        ${session && task ? `<button class="hour-task" data-task-id="${task.id}" aria-label="${complete ? 'Mark incomplete' : 'Complete'} ${task.name}"><strong>${session.title}</strong><small>${session.time} · ${session.minutes} min</small></button>` : '<span class="free-hour">Available</span>'}
+      </div>`;
+    }).join('');
+
+    return `<section class="hour-day"><header><strong>${day.day}</strong><span>${day.date.toLocaleDateString('en', { month: 'short', day: 'numeric' })}</span></header>${hours}</section>`;
+  }).join('');
 }
 
 function getLevelFromXp(xp) {
+  const cappedXp = Math.max(0, xp);
   let level = 1;
-  let remaining = xp;
-  while (remaining >= 100 + (level - 1) * 25) {
-    remaining -= 100 + (level - 1) * 25;
-    level += 1;
+  for (let index = 1; index < LEVEL_THRESHOLDS.length; index += 1) {
+    if (cappedXp < LEVEL_THRESHOLDS[index]) break;
+    level = index + 1;
   }
-  return { level, currentXp: remaining, requiredXp: 100 + (level - 1) * 25 };
+
+  const currentThreshold = LEVEL_THRESHOLDS[level - 1] || 0;
+  const nextThreshold = LEVEL_THRESHOLDS[level] || currentThreshold + 5000;
+  return {
+    level,
+    currentXp: cappedXp - currentThreshold,
+    requiredXp: nextThreshold - currentThreshold,
+    totalToNext: nextThreshold
+  };
 }
 
 function renderProgression() {
@@ -803,15 +995,17 @@ function renderProgression() {
   const unlocked = HERO_UNLOCKS.filter((hero) => progression.level >= hero.level).at(-1);
   levelValue.textContent = `LVL ${progression.level}`;
   xpValue.textContent = String(state.xp);
-  nextLevelText.textContent = `${progression.requiredXp - progression.currentXp} XP to level ${progression.level + 1}`;
-  xpBar.style.width = `${Math.round((progression.currentXp / progression.requiredXp) * 100)}%`;
+  nextLevelText.textContent = `${Math.max(0, progression.requiredXp - progression.currentXp)} XP to level ${progression.level + 1}`;
+  xpBar.style.width = `${Math.min(100, Math.round((progression.currentXp / progression.requiredXp) * 100))}%`;
+  sessionCount.textContent = String(state.completedSessions);
+  streakValue.textContent = String(state.streak);
 
   if (unlocked) {
     characterCard.classList.remove('locked');
     characterAvatar.textContent = unlocked.avatar;
     characterName.textContent = unlocked.name;
-    characterDescription.textContent = unlocked.description;
-    unlockStatus.textContent = `Level ${unlocked.level} milestone reached. Companion unlocked!`;
+    characterDescription.textContent = `${unlocked.rank} student · ${unlocked.reward}`;
+    unlockStatus.textContent = `${unlocked.name} unlocked at level ${unlocked.level}.`;
   } else {
     const nextHero = HERO_UNLOCKS.find((hero) => hero.level > progression.level) || HERO_UNLOCKS.at(-1);
     characterCard.classList.add('locked');
@@ -820,6 +1014,11 @@ function renderProgression() {
     characterDescription.textContent = `${nextHero.level - progression.level} levels until ${nextHero.name}.`;
     unlockStatus.textContent = `Reach level ${nextHero.level} to unlock your next hero.`;
   }
+
+  levelRoadmap.innerHTML = HERO_UNLOCKS.map((hero) => {
+    const reached = progression.level >= hero.level;
+    return `<div class="roadmap-item ${reached ? 'unlocked' : ''}"><span class="roadmap-level">Lv. ${hero.level}</span><strong>${reached ? hero.avatar : '🔒'} ${hero.name}</strong><small>${hero.rank} · ${hero.reward}</small></div>`;
+  }).join('');
 }
 
 function renderCalendar() {
@@ -907,19 +1106,55 @@ function renderSchedule(scheduleData) {
     .join('');
 }
 
-function renderRecommendations(tasks, totalHoursPlanned, preferredWindowName) {
-  const sorted = [...tasks].sort((a, b) => b.priority - a.priority);
-  const items = [
-    `Use ${preferredWindowName} for your most demanding tasks, especially ${sorted[0]?.name}.`,
-    'Keep at least one short break after every 50–60 minutes of work to maintain focus.',
-    `Review ${sorted[1]?.name} first to reduce deadline risk before moving to lower-priority tasks.`
-  ];
-
-  if (totalHoursPlanned < 10) {
-    items.push('Your study load is light. Add one revision cycle to strengthen retention before tests.');
+function renderRecommendations(tasks, totalHoursPlanned, preferredWindowName, hoursPerDay = 3) {
+  if (!tasks.length) {
+    recommendationList.innerHTML = '<li><strong>Start with your deadlines</strong><span>Add an exam, assignment, project, or calendar task so the AI can build a focused recommendation.</span></li>';
+    return;
   }
 
-  recommendationList.innerHTML = items.map((item) => `<li>${item}</li>`).join('');
+  const sorted = [...tasks].sort((a, b) => b.priority - a.priority || a.dueInDays - b.dueInDays);
+  const urgent = sorted.filter((task) => task.dueInDays <= 2 || task.priority >= 85);
+  const totalRequestedHours = tasks.reduce((sum, task) => sum + task.duration, 0) / 60;
+  const weeklyCapacity = hoursPerDay * 7;
+  const capacityPercent = Math.round((totalRequestedHours / weeklyCapacity) * 100);
+  const topTask = sorted[0];
+  const topType = TASK_TYPES[topTask.type]?.label || 'Study';
+  const deadlineText = topTask.dueInDays <= 1 ? 'due today' : `due in ${topTask.dueInDays} days`;
+  const strategy = topTask.type === 'exam'
+    ? 'Use active recall and finish with a timed practice set.'
+    : topTask.type === 'assignment'
+      ? 'Split it into research, draft, and final-review blocks.'
+      : topTask.type === 'project'
+        ? 'Start with the smallest deliverable so progress is visible early.'
+        : 'Use a short first block, then test yourself without notes.';
+  const items = [
+    {
+      label: 'Next action',
+      title: `Start ${topTask.name}`,
+      body: `${topType} priority is ${topTask.priority}/100 and is ${deadlineText}. ${strategy}`
+    },
+    {
+      label: 'Capacity analysis',
+      title: `${Math.round(totalRequestedHours * 10) / 10}h requested vs ${weeklyCapacity}h available`,
+      body: capacityPercent > 100
+        ? `The plan is over capacity by ${Math.round((totalRequestedHours - weeklyCapacity) * 10) / 10}h. Add study time, reduce scope, or move lower-priority work.`
+        : `Your plan uses ${capacityPercent}% of weekly capacity. Keep ${preferredWindowName} for high-focus work and protect one recovery block.`
+    },
+    {
+      label: 'Priority queue',
+      title: urgent.length ? `${urgent.length} task${urgent.length > 1 ? 's' : ''} need immediate attention` : 'No critical deadline detected',
+      body: urgent.length
+        ? `Work in this order: ${urgent.slice(0, 3).map((task) => task.name).join(', ')}.`
+        : `After ${topTask.name}, continue with ${sorted[1]?.name || 'a revision cycle'} to keep the week balanced.`
+    },
+    {
+      label: 'Focus rhythm',
+      title: 'Use 50-minute focus blocks',
+      body: `Schedule a 10-minute break after each block. The timetable currently plans ${totalHoursPlanned}h of study.`
+    }
+  ];
+
+  recommendationList.innerHTML = items.map((item) => `<li><small>${item.label}</small><strong>${item.title}</strong><span>${item.body}</span></li>`).join('');
 }
 
 function updateStats(tasks, scheduleData, hoursPerDay) {
@@ -950,11 +1185,11 @@ function generateFromInput() {
   preferredWindow.value = chosenWindow;
   windowLabel.textContent = `${capitalize(chosenWindow)} sessions`;
 
-  renderTaskSummary(tasks);
+  renderTaskSummary(tasks, scheduleData);
   renderSchedule(scheduleData);
   renderProgression();
   renderCalendar();
-  renderRecommendations(tasks, scheduleData.totalHours, chosenWindow);
+  renderRecommendations(tasks, scheduleData.totalHours, chosenWindow, hoursPerDay);
   updateStats(tasks, scheduleData, hoursPerDay);
   statusBadge.textContent = calendarTasks.length ? `AI plan (${calendarTasks.length} calendar tasks)` : `Plan (${hoursPerDay}h/day)`;
   plannerContextNote.textContent = calendarTasks.length
@@ -986,9 +1221,9 @@ function adaptiveReschedule() {
   preferredWindow.value = chosenWindow;
   windowLabel.textContent = `${capitalize(chosenWindow)} sessions`;
 
-  renderTaskSummary(tasks);
+  renderTaskSummary(tasks, scheduleData);
   renderSchedule(scheduleData);
-  renderRecommendations(tasks, scheduleData.totalHours, chosenWindow);
+  renderRecommendations(tasks, scheduleData.totalHours, chosenWindow, hours);
   updateStats(tasks, scheduleData, hours);
   statusBadge.textContent = 'Rescheduled';
 }
@@ -1012,21 +1247,59 @@ rescheduleBtn.addEventListener('click', () => {
 pasteLoginBtn.addEventListener('click', pasteLoginDetails);
 applyPasteBtn.addEventListener('click', () => applyClipboardText(clipboardInput.value));
 
+function getTaskCompletionReward(task) {
+  let reward = 100;
+  if (task.type === 'assignment') reward += 50;
+  if (task.dueInDays > 0) reward += 200;
+  if (task.type === 'exam') reward += 500;
+  return reward;
+}
+
+function updateStudyStreak() {
+  const todayKey = getDateKey(new Date());
+  if (state.lastCompletedDate === todayKey) return 0;
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  state.streak = state.lastCompletedDate === getDateKey(yesterday) ? state.streak + 1 : 1;
+  state.lastCompletedDate = todayKey;
+  return state.streak;
+}
+
+function awardCompletionBonuses(task) {
+  const reward = getTaskCompletionReward(task);
+  let bonus = reward;
+  const currentStreak = updateStudyStreak();
+
+  [7, 14].forEach((milestone) => {
+    if (currentStreak >= milestone && !state.awardedStreakRewards.includes(milestone)) {
+      state.awardedStreakRewards.push(milestone);
+      bonus += 500;
+    }
+  });
+
+  const allTasksCompleted = state.tasks.length > 0 && state.tasks.every((item) => state.completedTaskIds.has(item.id));
+  if (allTasksCompleted) bonus += 250;
+  state.xp += bonus;
+}
+
 taskList.addEventListener('click', (event) => {
-  const button = event.target.closest('.quest-check');
+  const button = event.target.closest('.hour-task');
   if (!button) return;
   const task = state.tasks.find((item) => item.id === button.dataset.taskId);
   if (!task) return;
 
   if (state.completedTaskIds.has(task.id)) {
     state.completedTaskIds.delete(task.id);
-    state.xp = Math.max(0, state.xp - (25 + Math.round(task.duration / 15)));
+    state.completedSessions = Math.max(0, state.completedSessions - 1);
+    state.xp = Math.max(0, state.xp - getTaskCompletionReward(task));
   } else {
     state.completedTaskIds.add(task.id);
-    state.xp += 25 + Math.round(task.duration / 15);
+    state.completedSessions += 1;
+    awardCompletionBonuses(task);
   }
   saveProgress();
-  renderTaskSummary(state.tasks);
+  renderTaskSummary(state.tasks, state.schedule);
   renderProgression();
 });
 
@@ -1046,6 +1319,7 @@ todayBtn.addEventListener('click', () => {
 
 languageSelect.addEventListener('change', () => applyLanguage(languageSelect.value));
 voiceInputBtn.addEventListener('click', toggleVoiceInput);
+notificationBtn.addEventListener('click', startTaskNotifications);
 
 addDailyTaskBtn.addEventListener('click', () => {
   const title = dailyTaskInput.value.trim();
@@ -1102,18 +1376,29 @@ nextDayBtn.addEventListener('click', () => {
 loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
+  const name = studentName.value.trim();
   const email = studentEmail.value.trim();
   const password = passwordInput.value.trim();
 
-  if (!email || !password) {
-    loginWarning.textContent = 'Please enter your student email and password to continue.';
+  const validEmail = /\S+@\S+\.\S+/.test(email);
+  if ((accountMode === 'create' && !name) || !validEmail || !password) {
+    loginWarning.textContent = accountMode === 'create'
+      ? 'Enter your name, a valid email, and a password to create your account.'
+      : 'Enter a valid student email and password to continue.';
     return;
   }
 
   try {
     const existingUser = await getUserRecord(email);
 
-    if (!existingUser) {
+    if (accountMode === 'create') {
+      if (existingUser) {
+        loginWarning.textContent = 'An account already exists for this email. Switch to sign in.';
+        return;
+      }
+      await saveUserRecord(email, password, name);
+      loginWarning.textContent = 'Account created. Opening your magical timetable...';
+    } else if (!existingUser) {
       await saveUserRecord(email, password);
       loginWarning.textContent = 'Welcome aboard! Your account has been saved.';
     } else if (existingUser.password !== password) {
@@ -1130,6 +1415,17 @@ loginForm.addEventListener('submit', async (event) => {
     console.error('Login database error:', error);
     loginWarning.textContent = 'Database error. Please try again.';
   }
+});
+
+accountToggleBtn.addEventListener('click', () => {
+  accountMode = accountMode === 'login' ? 'create' : 'login';
+  const creatingAccount = accountMode === 'create';
+  studentNameField.hidden = !creatingAccount;
+  studentName.required = creatingAccount;
+  accountToggleBtn.textContent = creatingAccount ? 'Already have an account? Sign in' : 'Create an account';
+  loginForm.querySelector('.login-btn').textContent = creatingAccount ? 'Create account' : translate('enterTimetable', 'Enter the timetable');
+  loginWarning.textContent = creatingAccount ? 'Create your student profile to save your progress.' : 'Use your saved email and password to continue.';
+  if (creatingAccount) studentName.focus();
 });
 
 applyLanguage(localStorage.getItem('NKSchedulerLanguage') || 'en');

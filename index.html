@@ -51,7 +51,12 @@
         <p class="login-tag" data-i18n="welcome">Welcome to the Academy</p>
         <h1 data-i18n="loginTitle">Enter the Magical Study Gate</h1>
 
-        <form id="loginForm">
+        <form id="loginForm" novalidate>
+          <label class="login-field create-account-field" id="studentNameField" hidden>
+            <span>Student Name</span>
+            <input type="text" id="studentName" placeholder="Your name" autocomplete="name" />
+          </label>
+
           <label class="login-field">
             <span data-i18n="studentEmail">Student Email</span>
             <input type="email" id="studentEmail" placeholder="harry@hogwarts.ac" required />
@@ -69,6 +74,7 @@
             <button type="button" class="apply-paste-btn" id="applyPasteBtn">Use pasted details</button>
           </div>
           <button type="submit" class="login-btn" data-i18n="enterTimetable">Enter the timetable</button>
+          <button type="button" class="account-toggle-btn" id="accountToggleBtn">Create an account</button>
           <p id="loginWarning" class="login-warning">Use any valid email and password to continue.</p>
         </form>
       </div>
@@ -132,6 +138,8 @@
 
         <div class="panel stats-panel dashboard-section" id="snapshotSection">
           <h2 data-i18n="studySnapshot">Study snapshot</h2>
+          <button id="notificationBtn" class="notification-btn" type="button">Enable task notifications</button>
+          <p id="notificationStatus" class="notification-status" aria-live="polite">Notifications are off</p>
           <div class="stat-grid">
             <div>
               <span class="stat-label" data-i18n="urgentTasks">Urgent tasks</span>
@@ -170,6 +178,18 @@
               <span id="characterDescription">Complete quests to reveal a new companion.</span>
             </div>
           </div>
+          <div class="progression-metrics">
+            <span><strong id="sessionCount">0</strong> sessions</span>
+            <span><strong id="streakValue">0</strong> day streak</span>
+          </div>
+          <div class="xp-rewards" aria-label="XP rewards">
+            <span>Study session <b>+100</b></span>
+            <span>Assignment <b>+150</b></span>
+            <span>Before deadline <b>+200</b></span>
+            <span>Exam preparation <b>+500</b></span>
+            <span>7-day streak <b>+500</b></span>
+          </div>
+          <div class="level-roadmap" id="levelRoadmap" aria-label="Anime level unlock roadmap"></div>
         </div>
       </aside>
 
@@ -193,10 +213,10 @@
         <section class="hero-card dashboard-section" id="questSection">
           <div>
             <p class="eyebrow" data-i18n="taskAnalysis">Task analysis</p>
-            <h3 id="summaryTitle" data-i18n="priorityOverview">Priority overview</h3>
-            <p class="section-note">Complete a quest to earn XP and build your streak.</p>
+            <h3 id="summaryTitle">24-hour daily schedule</h3>
+            <p class="section-note">Every hour is visible. Study blocks come from your AI timetable; open hours stay available for rest or personal work.</p>
           </div>
-          <ul id="taskList" class="task-list"></ul>
+          <div id="taskList" class="task-list hourly-overview"></div>
         </section>
 
         <section class="calendar-section dashboard-section" id="calendarSection">
